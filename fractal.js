@@ -14,3 +14,8 @@ fractal.components.set('path', path.join(__dirname, 'components'));
 fractal.components.set('default.status', 'wip');
 fractal.docs.set('path', path.join(__dirname, 'docs'));
 fractal.web.set('static.path', path.join(__dirname, 'public'));
+
+/**
+ * Static export destination.
+ */
+fractal.web.set('builder.dest', __dirname + '/build');
