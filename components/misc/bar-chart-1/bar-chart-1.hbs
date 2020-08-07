@@ -1,0 +1,29 @@
+<section id="bar-chart-1">
+    <div class="intro">
+        <h1>Character Counter</h1>
+
+        <form id="story_form">
+            <label for="story">Feed me (some text), Seymour:</label>
+
+            <textarea id="story" name="story" rows="10" cols="60"></textarea>
+
+            <button type="button" id="story_submit">Computer, analyze</button>
+        </form>
+    </div>
+
+    <div class="outputBlock">
+        <div class="text">
+            <h2>The graph</h2>
+            <p>click a bar to see the count writ large</p>
+        </div>
+
+        <div id="svgOutput"></div>
+
+        <h2>The results</h2>
+
+        <div id="output"></div>
+    </div>
+</section>
+
+<script src="https://d3js.org/d3.v5.min.js"></script>
+<script src="{{ path '/js/components/bar-chart-1.js' }}"></script>

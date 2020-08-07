@@ -5,7 +5,7 @@ const fractal = module.exports = require('@frctl/fractal').create();
 /*
  * Set the project title here.
  */
-fractal.set('project.title', 'Fractal Starter Project');
+fractal.set('project.title', 'd3 sketchbook');
 
 /*
  * Tell Fractal where to look for components, docs, and static assets.
