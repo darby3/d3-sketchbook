@@ -1,0 +1,53 @@
+#use-join {
+  @keyframes spin {
+    0% {
+      transform: rotate(0);
+    }
+
+    100% {
+      transform: rotate(180deg);
+    }
+  }
+
+  #outputBox {
+    margin: 2rem 0;
+    padding: 2rem;
+    border: 2px solid aliceblue;
+  }
+
+  .spinner {
+    width: 4px;
+    height: 40px;
+    background-color: darkcyan;
+    animation: 0.75s ease-in-out both alternate infinite spin;
+  }
+
+  .results_box {
+    margin: 0 0 1rem 0;
+    .property {
+      font-weight: bold;
+    }
+  }
+
+  #svgOutput {
+    margin: 2rem 0;
+  }
+
+  svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    border: 1px solid navy;
+    background-color: azure;
+
+    .bar {
+      fill: darkslategray;
+    }
+  }
+
+  .block {
+    margin: 2rem 0;
+    padding: 2rem 0;
+    border-top: 1px solid cadetblue;
+  }
+}
