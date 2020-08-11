@@ -1,0 +1,40 @@
+<section id="bar-chart-3">
+    <div class="simple-grid">
+        <div class="intro">
+            <h1>Data</h1>
+        </div>
+
+        <div class="intro">
+
+            <p>is hidden inside a script tag right here</p>
+
+            <script>
+                const dataset = {
+                    "blue": 1,
+                    "red": 3,
+                    "dodgerblue": 3,
+                    "forestgreen": 3,
+                    "gray": 10,
+                    "yellow": 15,
+                    "turquoise": 24,
+                    "blueviolet": 12,
+                    "cadetblue": 5,
+                    "dimgray": 20
+                }
+            </script>
+        </div>
+    </div>
+
+    <div class="outputBlock">
+        <div class="text">
+            <h2>The graph</h2>
+            <p>click a bar to see the count writ large</p>
+            <p>note that this is functionally the same as bar chart 2 but I'm using better scales methods inside the script, I think</p>
+        </div>
+
+        <div id="svgOutput"></div>
+    </div>
+</section>
+
+<script src="https://d3js.org/d3.v5.min.js"></script>
+<script src="{{ path '/js/components/bar-chart-3.js' }}"></script>
