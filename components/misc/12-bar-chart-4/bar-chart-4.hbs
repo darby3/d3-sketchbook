@@ -1,0 +1,36 @@
+<section id="bar-chart-4">
+    <div class="openingGrid">
+        <div class="intro">
+            <h1>Bar Chart Fun</h1>
+        </div>
+
+        <div class="text">
+            <h2>The graph</h2>
+            <p>click a bar to see the count writ large</p>
+            <p>this continues to extend bar chart 3 but this time we use a margin object instead of a single padding variable</p>
+        </div>
+    </div>
+
+    <div id="svgOutput"></div>
+
+    <div class="intro">
+        <p>(data is hidden inside a script tag right here)</p>
+        <script>
+            const dataset = {
+                "blue": 1,
+                "red": 3,
+                "dodgerblue": 3,
+                "forestgreen": 3,
+                "gray": 10,
+                "yellow": 15,
+                "turquoise": 25,
+                "blueviolet": 12,
+                "cadetblue": 5,
+                "dimgray": 20
+            }
+        </script>
+    </div>
+</section>
+
+<script src="https://d3js.org/d3.v5.min.js"></script>
+<script src="{{ path '/js/components/bar-chart-4.js' }}"></script>
