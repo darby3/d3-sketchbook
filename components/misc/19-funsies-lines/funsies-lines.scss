@@ -1,0 +1,26 @@
+#funsies-lines {
+  padding: 1rem;
+  margin: 1rem;
+  border: 2px dotted fuchsia;
+  background-color: gainsboro;
+  font-family: Verdana, sans-serif;
+
+  svg {
+    background-color: aliceblue;
+  }
+
+  .controls {
+    margin-bottom: 2rem;
+  }
+
+  // just trying to hide these from view
+  .svgPatterns {
+    height: 0;
+    width: 0;
+    overflow: hidden;
+  }
+
+  .datapt:hover {
+    stroke-opacity: 1;
+  }
+}
