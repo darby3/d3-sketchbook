@@ -1,0 +1,73 @@
+#radial-lines-3 {
+  padding: 1rem;
+  margin: 1rem;
+  border: 2px dotted fuchsia;
+  background-color: gainsboro;
+  font-family: Verdana, sans-serif;
+
+  svg {
+    background-color: aliceblue;
+  }
+
+  .controls {
+    margin: 2rem 0;
+
+    display: grid;
+    grid-gap: 1rem;
+
+    button {
+      padding: 0.25rem;
+      border-radius: 0.25rem;
+      border-width: 1px;
+
+      font-family: "Helvetica Neue", sans-serif;
+      font-size: 0.875rem;
+
+      background-color: aliceblue;
+    }
+  }
+
+  // just trying to hide these from view
+  .svgPatterns {
+    height: 0;
+    width: 0;
+    overflow: hidden;
+  }
+
+  .datapt {
+    fill: none;
+    transition: stroke-opacity 0.25s ease-out, stroke-width 0.5s ease-in-out;
+
+    &.datapt--positive {
+      stroke: green;
+      stroke-width: 4;
+      stroke-opacity: 0.2;
+      stroke-linecap: round;
+
+      &:hover {
+        stroke-opacity: 1;
+      }
+
+      &.selected {
+        stroke-width: 8;
+        stroke-opacity: 0.5;
+      }
+    }
+
+    &.datapt--negative {
+      stroke: crimson;
+      stroke-width: 4;
+      stroke-opacity: 0.2;
+      stroke-linecap: round;
+
+      &:hover {
+        stroke-opacity: 1;
+      }
+
+      &.selected {
+        stroke-width: 8;
+        stroke-opacity: 0.5;
+      }
+    }
+  }
+}
