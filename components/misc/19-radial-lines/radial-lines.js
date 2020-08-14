@@ -1,6 +1,6 @@
 (function () {
   document.addEventListener('DOMContentLoaded', function () {
-    console.log("funsies-lines active");
+    console.log("radial-lines active");
 
     // line coordinate helper functions
 
