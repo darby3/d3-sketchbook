@@ -24,12 +24,12 @@
 
     // config
 
-    const width = 1000;
-    const height = 700;
+    const width = 1200;
+    const height = 800;
     const margin = {
-      "top": 20,
-      "bottom": 30,
-      "left": 40,
+      "top": 10,
+      "bottom": 10,
+      "left": 10,
       "right": 10
     }
 
@@ -64,8 +64,8 @@
       .attr('y', margin.top)
       .attr('height', height - margin.bottom - margin.top)
       .attr('width', width - margin.right - margin.left)
-      .attr('stroke', 'black')
-      .attr('stroke-width', '1')
+      .attr('stroke', 'darkslategray')
+      .attr('stroke-width', '0.25')
       .attr('fill', '#ffffff');
 
 
