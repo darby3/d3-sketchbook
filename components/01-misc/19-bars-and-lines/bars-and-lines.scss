@@ -1,0 +1,16 @@
+#bars-and-lines {
+  padding: 1rem;
+  margin: 1rem;
+  border: 2px dotted fuchsia;
+  background-color: gainsboro;
+  font-family: Verdana, sans-serif;
+
+  svg {
+    background-color: aliceblue;
+
+    .bar {
+      fill: $lightgray;
+      fill-opacity: 0.8;
+    }
+  }
+}
