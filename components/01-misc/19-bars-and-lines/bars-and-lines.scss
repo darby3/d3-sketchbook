@@ -6,10 +6,11 @@
   font-family: Verdana, sans-serif;
 
   svg {
-    background-color: aliceblue;
+    background-color: $white;
+    border: 1px solid $mediumgray;
 
     .bar {
-      fill: $lightgray;
+      fill: $lightergray;
       fill-opacity: 0.8;
     }
   }

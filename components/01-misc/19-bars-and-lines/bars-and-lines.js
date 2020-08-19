@@ -5,7 +5,7 @@
     // config
 
     const width = 1000;
-    const height = 700;
+    const height = 400;
     const margin = {
       "top": 20,
       "bottom": 30,
@@ -61,7 +61,7 @@
       .attr("height", (d) => yScale(0) - yScale(d.total))
       .attr("data-total", (d) => (d.total))
       .append('title')
-      .text((d) => d.date);
+      .text((d) => `id: ${d.id} / total: ${d.total}`);
 
 
     // create a line function and use it to draw a line
@@ -73,7 +73,7 @@
     svg.append('path')
       .attr('d', line(datasetArray))
       .attr('fill', 'none')
-      .attr('stroke', '#a6192e')
+      .attr('stroke', '#363232')
       .attr('stroke-width', '1')
       .attr('stroke-linejoin', 'round')
       .attr('transform', 'translate(' + xScale.bandwidth() / 2 + ', 0)');
@@ -88,9 +88,9 @@
       .attr('cx', (d) => xScale(d.id) + xScale.bandwidth() / 2)
       .attr("cy", (d) => yScale(d.count))
       .attr("r", '4')
-      .attr("fill", "white")
-      .attr("stroke", "#a6192e")
-      .attr("stroke-width", "0.5")
+      .attr("fill", "#a6192e")
+      .attr("stroke", "#ffffff")
+      .attr("stroke-width", "1")
       .append('title')
       .text((d) => `id: ${d.id} / count: ${d.count}`);
 
@@ -98,8 +98,10 @@
 
     const xAxis = d3.axisBottom(xScale)
       .tickValues(xScale.domain().filter(function (d, i) {
-        return (i % 2)
+        // return (i % 2)
+        return true
       }));
+
     const yAxis = d3.axisLeft(yScale);
 
     svg.append("g")
