@@ -3,6 +3,8 @@ const path = require('path');
 const fs = require('fs');
 const ncp = require('ncp').ncp;
 const prompt = require('prompt');
+const shell = require('shelljs');
+
 
 const dir_path = path.join(__dirname, 'components');
 
@@ -105,19 +107,24 @@ function goDuplicateComponent(componentSetDir) {
         }
 
         console.log('finished duplicating component, updating new component next');
-        updateNewComponent(newComponent, result.new_directory_name);
+        updateNewComponent(oldDir, newComponent, result.new_directory_name);
       });
     });
   })
 }
 
 // Given a new component, update it
-function updateNewComponent(newComponent, newComponentName) {
-  console.log(newComponent);
-  console.log(newComponentName);
-  
-  // rename the files in the component
+function updateNewComponent(oldComponentName, newComponent, newComponentName) {
+  console.log("-- updating component contents");
+  const oldComponentShort = oldComponentName.substring(3);
+  const newComponentShort = newComponentName.substring(3);
 
-  // edit the contents of the component
+  shell.ls(newComponent).forEach(function (file) {
+    // edit the contents of the component
+    shell.sed('-i', oldComponentShort, newComponentShort, newComponent + '/' + file);
 
+    // rename the files in the component
+    const newFileName = file.replace(oldComponentShort, newComponentShort);
+    fs.rename(newComponent + '/' + file, newComponent + '/' + newFileName, () => {});
+  });
 }
