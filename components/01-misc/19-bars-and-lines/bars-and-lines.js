@@ -36,7 +36,7 @@
     const xScale = d3.scaleBand()
       .domain(datasetArray.map(d => d.id))
       .range([margin.left, width - margin.right])
-      .padding(0.05);
+      .padding(0.1);
 
     const yScale = d3.scaleLinear()
       .domain([0, d3.max(datasetArray, (d) => d.total)])
@@ -90,7 +90,7 @@
       .attr("r", '4')
       .attr("fill", "#a6192e")
       .attr("stroke", "#ffffff")
-      .attr("stroke-width", "1")
+      .attr("stroke-width", "0")
       .append('title')
       .text((d) => `id: ${d.id} / count: ${d.count}`);
 
@@ -106,10 +106,22 @@
 
     svg.append("g")
       .attr("transform", "translate(" + margin.left + ", 0)")
-      .call(yAxis);
+      .call(yAxis)
+      .call(g => g.selectAll(".domain")
+        .attr('stroke', '#c6c4c4'))
+      .call(g => g.selectAll(".tick text")
+        .attr('fill', '#787272'))
+      .call(g => g.selectAll(".tick line")
+        .attr('stroke', '#c6c4c4'));
 
     svg.append("g")
       .attr("transform", "translate(0, " + (height - margin.bottom) + ")")
-      .call(xAxis);
+      .call(xAxis)
+      .call(g => g.selectAll(".domain")
+        .attr('stroke', '#787272'))
+      .call(g => g.selectAll(".tick text")
+        .attr('fill', '#787272'))
+      .call(g => g.selectAll(".tick line")
+        .remove());
   });
 })();
