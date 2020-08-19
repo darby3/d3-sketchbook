@@ -1,5 +1,5 @@
 ---
-title: Example Project
+title: d3 Sketchbook
 ---
 
-This is your index page. You can edit its contents at `docs/01-index.hbs`
+I'm learning how to use d3. This is a place to dump examples and samples. 

@@ -1,0 +1,83 @@
+//
+// 2020 Colors
+//
+
+$lightred: #e81727;
+$darkred: #a6192e;
+
+$yellow: #FFC72C;
+$darkerblue: #005EB8;
+$lighterblue: #6AD1E3;
+
+$barelynotwhite: #FAFAFA;
+$almostwhite: #EFEFEF;
+$lightgray: #A7A5A5;
+$mediumgray: #787272;
+$darkgray: #363232;
+$almostblack: #120c0c;
+
+$white: #ffffff;
+$black: #000000;
+
+#clean-bars {
+  @keyframes spin {
+    0% {
+      transform: rotate(0);
+    }
+
+    100% {
+      transform: rotate(180deg);
+    }
+  }
+
+  #outputBox {
+    margin: 2rem 0;
+    padding: 2rem;
+    border: 2px solid aliceblue;
+  }
+
+  .spinner {
+    width: 4px;
+    height: 40px;
+    background-color: darkcyan;
+    animation: 0.75s ease-in-out both alternate infinite spin;
+  }
+
+  .results_box {
+    margin: 0 0 1rem 0;
+    .property {
+      font-weight: bold;
+    }
+  }
+
+  #svgOutput {
+    margin: 2rem 0;
+  }
+
+  svg {
+    display: block;
+    width: calc(100% - 2px - 2rem);
+    margin: auto;
+    height: auto;
+    border: 1px solid navy;
+    background-color: $white;
+
+    .bar {
+      fill: $lightgray;
+      fill-opacity: 0.8;
+      //stroke: $mediumgray;
+      //stroke-width: 0.5px;
+    }
+
+    .percentage-bar {
+      fill: $darkred;
+      fill-opacity: 1;
+    }
+  }
+
+  .block {
+    margin: 2rem 0;
+    padding: 2rem 0;
+    border-top: 1px solid cadetblue;
+  }
+}

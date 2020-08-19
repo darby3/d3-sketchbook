@@ -1,0 +1,32 @@
+<section id="clean-bars">
+    <h1>Bars with percentages</h1>
+    <p>the bar height is the total count and then a percentage of the bar is overlaid on top of the bar</p>
+
+    <button id="trigger">Load data</button>
+
+    <div class="block">
+        <h2>The SVG Output</h2>
+        <p>Hover on bars for property title</p>
+        <div id="svgOutput"></div>
+    </div>
+
+{{!--
+    <div class="block">
+        <h2>The text output</h2>
+        <div id="outputBox"></div>
+    </div>
+--}}
+</section>
+
+<div class="templates">
+    <template id="result_box">
+        <div class="results_box">
+            <div class="result">
+                <span class="property"></span>: <span class="count"></span>
+            </div>
+        </div>
+    </template>
+</div>
+
+<script src="https://d3js.org/d3.v5.min.js"></script>
+<script src="{{ path '/js/components/clean-bars.js' }}"></script>
