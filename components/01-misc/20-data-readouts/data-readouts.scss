@@ -1,0 +1,23 @@
+#data-readouts {
+  padding: 1rem;
+  margin: 1rem;
+  border: 2px dotted fuchsia;
+  background-color: gainsboro;
+  font-family: Verdana, sans-serif;
+
+  svg {
+    background-color: $white;
+    border: 1px solid $mediumgray;
+
+    .bar {
+      transition: fill 0.25s ease-out;
+      fill: $lightergray;
+      fill-opacity: 0.8;
+
+      &:hover {
+        cursor: pointer;
+        fill: $lightgray;
+      }
+    }
+  }
+}
