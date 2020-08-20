@@ -139,6 +139,10 @@
 
     svg.select('rect.bar:last-of-type').dispatch('click');
 
+
+
+
+
     function barClickHandler(d, i) {
       console.log("click handled");
 
@@ -148,45 +152,61 @@
 
       d3.select(this).classed('selected', true);
 
-      svg.selectAll('text.bigLabel').remove();
-      svg.selectAll('text.dateLabel').remove();
-      svg.selectAll('text.smallLabel').remove();
+      svg.selectAll('g.statsBox').remove();
 
-      svg.append('text')
-        .attr("x", width - margin.right + 64)
-        .attr("y", margin.top + 64)
-        .attr('class', 'dateLabel')
-        .text(d.dateRange);
+      svg.append("g")
+        .attr('id', 'dateBox')
+        .attr('class', 'statsBox statsBox--plain')
+        .attr("transform", `translate(${width - margin.right + 32}, ${margin.top})`)
+        .call(g => g.append('rect')
+          .attr("width", margin.right - 64)
+          .attr("height", `${height / 3 - 32}`))
+        .call(g => g.append('text')
+          .attr('class', 'smallLabel')
+          .attr('dx', `${(margin.right - 64) / 2}`)
+          .attr('dy', "35")
+          .text("Tests result for"))
+        .call(g => g.append('text')
+          .attr('class', 'dateLabel')
+          .attr('dx', `${(margin.right - 64) / 2}`)
+          .attr('dy', "75")
+          .text(d.dateRange));
 
-      svg.append('text')
-        .attr("x", width - margin.right + 64)
-        .attr("y", margin.top + 96)
-        .attr('class', 'smallLabel')
-        .text("date goes above");
+      svg.append("g")
+        .attr('id', 'testsBox')
+        .attr('class', 'statsBox')
+        .attr("transform", `translate(${width - margin.right + 32}, ${margin.top + height / 3 - 16})`)
+        .call(g => g.append('rect')
+          .attr("width", margin.right - 64)
+          .attr("height", `${height / 3 - 32}`))
+        .call(g => g.append('text')
+          .attr('class', 'bigLabel')
+          .attr('dx', `${(margin.right - 64) / 2}`)
+          .attr('dy', "45")
+          .text(d.total))
+        .call(g => g.append('text')
+          .attr('class', 'smallLabel')
+          .attr('dx', `${(margin.right - 64) / 2}`)
+          .attr('dy', "78")
+          .text("tests performed"));
 
-      svg.append('text')
-        .attr("x", width - margin.right + 64)
-        .attr("y", margin.top + 192)
-        .attr('class', 'bigLabel')
-        .text(d.total);
-
-      svg.append('text')
-        .attr("x", width - margin.right + 64)
-        .attr("y", margin.top + 224)
-        .attr('class', 'smallLabel')
-        .text("tests performed");
-
-      svg.append('text')
-        .attr("x", width - margin.right + 64)
-        .attr("y", margin.top + 320)
-        .attr('class', 'bigLabel')
-        .text(`${d.count} (${(d.percentage * 100).toFixed(2)}%)` );
-
-      svg.append('text')
-        .attr("x", width - margin.right + 64)
-        .attr("y", margin.top + 352)
-        .attr('class', 'smallLabel')
-        .text("positive results");
+      svg.append("g")
+        .attr('id', 'positivesBox')
+        .attr('class', 'statsBox')
+        .attr("transform", `translate(${width - margin.right + 32}, ${margin.top + height / 3 * 2 - 32})`)
+        .call(g => g.append('rect')
+          .attr("width", margin.right - 64)
+          .attr("height", `${height / 3 - 32}`))
+        .call(g => g.append('text')
+          .attr('class', 'bigLabel')
+          .attr('dx', `${(margin.right - 64) / 2}`)
+          .attr('dy', "45")
+          .text(`${d.count} (${(d.percentage * 100).toFixed(2)}%)`))
+        .call(g => g.append('text')
+          .attr('class', 'smallLabel')
+          .attr('dx', `${(margin.right - 64) / 2}`)
+          .attr('dy', "78")
+          .text("positive results"));
     }
 
 
