@@ -37,7 +37,7 @@
     const xScale = d3.scaleBand()
       .domain(datasetArray.map(d => d.id))
       .range([margin.left, width - margin.right])
-      .padding(0.1);
+      .paddingInner(0.1);
 
     const yScale = d3.scaleLinear()
       .domain([0, d3.max(datasetArray, (d) => d.total)])
@@ -188,7 +188,7 @@
         .style('font-size', '4rem')
         .style('font-weight', 'bold')
         .style("fill", "#000000")
-        .text(d.count);
+        .text(`${d.count} (${(d.percentage * 100).toFixed(2)}%)` );
 
       svg.append('text')
         .attr("x", width - margin.right + 64)
