@@ -29,6 +29,11 @@ fs.readdir(dir_path, {
   prompt.start();
 
   prompt.get(['Component set'], function (err, result) {
+    if (err) {
+      console.log('\n\nCancelled.\n');
+      return;
+    }
+
     const componentSetDir = componentDirs.find(dir => {
       return dir.option === parseInt(result['Component set']);
     }).directory;
@@ -62,6 +67,11 @@ function goDuplicateComponent(componentSetDir) {
     prompt.start();
 
     prompt.get(['Directory to duplicate', 'New directory name'], function (err, result) {
+      if (err) {
+        console.log('\n\nCancelled.\n');
+        return;
+      }
+
       const dirPath = 'components/' + componentSetDir + '/';
       const oldDir = availableComponentDirs.find(dir => {
         return dir.option === parseInt(result['Directory to duplicate']);
@@ -96,7 +106,8 @@ function updateNewComponent(oldComponentName, newComponent, newComponentName) {
 
     // rename the files in the component
     const newFileName = file.replace(oldComponentShort, newComponentShort);
-    fs.rename(newComponent + '/' + file, newComponent + '/' + newFileName, () => {});
+    fs.rename(newComponent + '/' + file, newComponent + '/' + newFileName, () => {
+    });
   });
 }
 
@@ -113,7 +124,7 @@ function getOptions(dirs) {
 
   dirs.sort().forEach(function (dir, i) {
     output.push({
-      'option': i,
+      'option': i + 1,
       'directory': dir
     })
   })
@@ -125,7 +136,7 @@ function outputOptions(opts) {
   console.log('--');
 
   opts.forEach(item => {
-    console.log(chalk.green(item.option) + " : " + item.directory);
+    console.log(chalk.greenBright(item.option) + "  :  " + item.directory);
   });
 
   console.log('--');
