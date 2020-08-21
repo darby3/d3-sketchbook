@@ -102,6 +102,7 @@
       .attr("width", () => xScale.bandwidth())
       .attr("height", (d) => yScale(0) - yScale(d.total))
       .attr("data-total", (d) => (d.total))
+      .attr("data-available", (d) => (d.total > 0))
       .on("click", barClickHandler)
       .append('title')
       .text((d) => `id: ${d.id} / total: ${d.total}`);
@@ -137,11 +138,18 @@
       .append('title')
       .text((d) => `id: ${d.id} / count: ${d.count}`);
 
-    svg.select('rect.bar:last-of-type').dispatch('click');
+    // d3.selection.prototype.first = function() {
+    //   return d3.select(this[0]);
+    // };
+    // d3.selection.prototype.last = function() {
+    //   var last = this.size() - 1;
+    //   return d3.select(this[last]);
+    // };
+    //
+    // svg.selectAll('rect.bar[data-available="true"]').last()
+    //   .dispatch('click');
 
-
-
-
+    const dataAvails = svg.selectAll('rect.bar[data-available="true"]').dispatch('click');
 
     function barClickHandler(d, i) {
       console.log("click handled");
