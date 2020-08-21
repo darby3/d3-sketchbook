@@ -1,17 +1,17 @@
 (function () {
   document.addEventListener('DOMContentLoaded', function () {
-    console.log("dashboard-tile-bg active");
-    console.log("dashboard-tile-bg active for real");
+    console.log("basic-dashboard active");
+    console.log("basic-dashboard active for real");
 
     // config
 
     const width = 1000;
-    const height = 500;
+    const height = 400;
     const margin = {
-      "top": 50,
-      "bottom": 75,
-      "left": 80,
-      "right": 380
+      "top": 20,
+      "bottom": 45,
+      "left": 50,
+      "right": 350
     }
 
     // data input and massaging
@@ -58,20 +58,6 @@
       .attr("viewBox", [0, 0, width, height])
       .attr("preserveAspectRatio", "xMidYMid meet");
 
-    svg.append('rect')
-      .attr('x', 0)
-      .attr('y', 0)
-      .attr('width', 1000)
-      .attr('height', 700)
-      .style('fill', 'url(#tile)');
-
-    svg.append('rect')
-      .attr('x', 30)
-      .attr('y', 30)
-      .attr('width', '940')
-      .attr('height', '440')
-      .style('fill', '#ffffff');
-
     // axes
 
     const xAxis = d3.axisBottom(xScale)
@@ -116,6 +102,7 @@
       .attr("width", () => xScale.bandwidth())
       .attr("height", (d) => yScale(0) - yScale(d.total))
       .attr("data-total", (d) => (d.total))
+      .attr("data-available", (d) => (d.total > 0))
       .on("click", barClickHandler)
       .append('title')
       .text((d) => `id: ${d.id} / total: ${d.total}`);
@@ -151,11 +138,18 @@
       .append('title')
       .text((d) => `id: ${d.id} / count: ${d.count}`);
 
-    svg.select('rect.bar:last-of-type').dispatch('click');
+    // d3.selection.prototype.first = function() {
+    //   return d3.select(this[0]);
+    // };
+    // d3.selection.prototype.last = function() {
+    //   var last = this.size() - 1;
+    //   return d3.select(this[last]);
+    // };
+    //
+    // svg.selectAll('rect.bar[data-available="true"]').last()
+    //   .dispatch('click');
 
-
-
-
+    const dataAvails = svg.selectAll('rect.bar[data-available="true"]').dispatch('click');
 
     function barClickHandler(d, i) {
       console.log("click handled");
@@ -173,52 +167,52 @@
         .attr('class', 'statsBox statsBox--plain')
         .attr("transform", `translate(${width - margin.right + 48}, ${margin.top})`)
         .call(g => g.append('rect')
-          .attr("width", margin.right - 106)
+          .attr("width", margin.right - 76)
           .attr("height", `${height / 3 - 32}`))
         .call(g => g.append('text')
           .attr('class', 'smallLabel')
-          .attr('dx', `${(margin.right - 106) / 2}`)
+          .attr('dx', `${(margin.right - 76) / 2}`)
           .attr('dy', "35")
           .text("Tests result for"))
         .call(g => g.append('text')
           .attr('class', 'dateLabel')
-          .attr('dx', `${(margin.right - 106) / 2}`)
+          .attr('dx', `${(margin.right - 76) / 2}`)
           .attr('dy', "75")
           .text(d.dateRange));
 
       svg.append("g")
         .attr('id', 'testsBox')
         .attr('class', 'statsBox')
-        .attr("transform", `translate(${width - margin.right + 48}, ${margin.top + height / 3 - 32})`)
+        .attr("transform", `translate(${width - margin.right + 48}, ${margin.top + height / 3 - 16})`)
         .call(g => g.append('rect')
-          .attr("width", margin.right - 106)
-          .attr("height", `${height / 3 - 64}`))
+          .attr("width", margin.right - 76)
+          .attr("height", `${height / 3 - 32}`))
         .call(g => g.append('text')
           .attr('class', 'bigLabel')
-          .attr('dx', `${(margin.right - 106) / 2}`)
+          .attr('dx', `${(margin.right - 76) / 2}`)
           .attr('dy', "45")
           .text(d.total))
         .call(g => g.append('text')
           .attr('class', 'smallLabel')
-          .attr('dx', `${(margin.right - 106) / 2}`)
+          .attr('dx', `${(margin.right - 76) / 2}`)
           .attr('dy', "78")
           .text("tests performed"));
 
       svg.append("g")
         .attr('id', 'positivesBox')
         .attr('class', 'statsBox')
-        .attr("transform", `translate(${width - margin.right + 48}, ${margin.top + height / 3 * 2 - 64})`)
+        .attr("transform", `translate(${width - margin.right + 48}, ${margin.top + height / 3 * 2 - 32})`)
         .call(g => g.append('rect')
-          .attr("width", margin.right - 106)
-          .attr("height", `${height / 3 - 64}`))
+          .attr("width", margin.right - 76)
+          .attr("height", `${height / 3 - 32}`))
         .call(g => g.append('text')
           .attr('class', 'bigLabel')
-          .attr('dx', `${(margin.right - 106) / 2}`)
+          .attr('dx', `${(margin.right - 76) / 2}`)
           .attr('dy', "45")
           .text(`${d.count} (${(d.percentage * 100).toFixed(2)}%)`))
         .call(g => g.append('text')
           .attr('class', 'smallLabel')
-          .attr('dx', `${(margin.right - 106) / 2}`)
+          .attr('dx', `${(margin.right - 76) / 2}`)
           .attr('dy', "78")
           .text("positive results"));
     }

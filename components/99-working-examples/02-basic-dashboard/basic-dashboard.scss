@@ -1,14 +1,23 @@
-#simple-dashboard-red-bg {
+#basic-dashboard {
   font-family: Verdana, sans-serif;
 
+  #scrollbox {
+    max-width: 100%;
+    overflow-x: scroll;
+
+    #svgOutput {
+      min-width: 700px;
+    }
+  }
+
   svg {
-    background-color: $darkred;
-    //border: 4px solid $darkred;
+    background-color: $white;
+    border: 4px solid $darkred;
 
     .bar {
       transition: fill 0.25s ease-out;
-      fill: $white;
-      fill-opacity: 1;
+      fill: $lightergray;
+      fill-opacity: 0.8;
 
       &:hover {
         cursor: pointer;
@@ -16,9 +25,7 @@
       }
 
       &.selected {
-        fill: $darkgray;
-        stroke: $white;
-        stroke-width: 0.5;
+        fill: $darkred;
         fill-opacity: 1;
       }
     }
@@ -49,20 +56,18 @@
 
   .statsBox {
     rect {
-      fill: $darkgray;
-      stroke: #efefef;
-      stroke-width: 0.5;
+      fill: $darkred;
     }
   }
 
   .statsBox.statsBox--plain {
     rect {
-      fill: $darkred;
+      fill: $white;
       stroke-width: 0;
     }
 
     text {
-      fill: $white;
+      fill: $darkred;
     }
   }
 }

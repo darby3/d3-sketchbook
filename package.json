@@ -26,6 +26,7 @@
     }
   },
   "scripts": {
+    "iterate": "node iterateComponent",
     "sass": "node-sass --source-map=true --importer node_modules/node-sass-magic-importer/dist/cli.js --output-style='expanded' assets/scss/ --output public/css/",
     "sass:prod": "node-sass --importer node_modules/node-sass-magic-importer/dist/cli.js --output-style='expanded' assets/scss/ --output public/css/",
     "js:single": "onchange 'components/**/*.js' -- ./getOneJs.sh {{changed}}",
