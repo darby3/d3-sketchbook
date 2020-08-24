@@ -66,7 +66,7 @@
         // return true
       }));
 
-    const yAxis = d3.axisLeft(yScale);
+    const yAxis = d3.axisLeft(yScale).ticks(5);
 
     svg.append("g")
       .attr("transform", "translate(0, " + (height - margin.bottom) + ")")

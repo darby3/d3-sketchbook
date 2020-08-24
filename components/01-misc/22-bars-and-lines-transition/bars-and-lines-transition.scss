@@ -1,0 +1,21 @@
+#bars-and-lines-transition {
+  padding: 1rem;
+  margin: 1rem;
+  border: 2px dotted fuchsia;
+  background-color: gainsboro;
+  font-family: Verdana, sans-serif;
+
+  svg {
+    background-color: $white;
+    border: 1px solid $mediumgray;
+
+    .bar {
+      fill: $lightergray;
+      fill-opacity: 0.8;
+    }
+  }
+
+  .controls {
+    margin-bottom: 1rem;
+  }
+}
