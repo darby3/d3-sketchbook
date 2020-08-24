@@ -62,7 +62,8 @@
     text-anchor: middle;
   }
 
-  .statsBox {
+  .statsBox,
+  #dataReadoutRects {
     rect {
       fill: $darkred;
     }
