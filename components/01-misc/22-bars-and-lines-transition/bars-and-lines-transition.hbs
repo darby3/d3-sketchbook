@@ -1,0 +1,30 @@
+<section id="bars-and-lines-transition">
+    <h1>Bars and Lines with Transitions</h1>
+    <p>Transitioning between "zooms" of the domain</p>
+
+    <div class="controls">
+        <button id="seeDotsOnly">Zoom in on the dots</button>
+    </div>
+
+    <div id="svgOutput"></div>
+
+    <div class="intro">
+        <p>(data is hidden inside a script tag right here)</p>
+        <script>
+            const dataset = [
+                {"id": 1, "number": 13, "total": 835},
+                {"id": 2, "number": 13, "total": 845},
+                {"id": 3, "number": 6, "total": 825},
+                {"id": 4, "number": 14, "total": 815},
+                {"id": 5, "number": 11, "total": 855},
+                {"id": 6, "number": 11, "total": 865},
+                {"id": 7, "number": 14, "total": 895},
+                {"id": 8, "number": 20, "total": 835},
+                {"id": 9, "number": 17, "total": 845},
+                {"id": 10, "number": 8, "total": 825}]
+        </script>
+    </div>
+</section>
+
+<script src="https://d3js.org/d3.v5.min.js"></script>
+<script src="{{ path '/js/components/bars-and-lines-transition.js' }}"></script>
