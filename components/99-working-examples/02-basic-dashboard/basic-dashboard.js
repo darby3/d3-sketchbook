@@ -62,7 +62,7 @@
 
     const xAxis = d3.axisBottom(xScale)
       .tickValues(xScale.domain().filter(function (d, i) {
-        return !(i % 4)
+        return !(i % 2)
         // return true
       }));
 
@@ -78,7 +78,7 @@
         .attr('dy', '20')
         .style('font-size', '0.875rem'))
       .call(g => g.selectAll(".tick line")
-          .attr('y2', '12'));
+        .attr('y2', '12'));
 
     svg.append("g")
       .attr("transform", "translate(" + margin.left + ", 0)")
@@ -111,8 +111,11 @@
     // create a line function and use it to draw a line
 
     const line = d3.line()
-             .x(d => xScale(d.dateRange))
-             .y(d => yScale(d.count))
+      .defined((d) => {
+        return yScale(0) - yScale(d.count) > 0;
+      })
+      .x(d => xScale(d.dateRange))
+      .y(d => yScale(d.count))
 
     svg.append('path')
       .attr('d', line(datasetArray))
@@ -131,7 +134,10 @@
       .attr('class', 'point')
       .attr('cx', (d) => xScale(d.dateRange) + xScale.bandwidth() / 2)
       .attr("cy", (d) => yScale(d.count))
-      .attr("r", '4')
+      .attr("r", (d) => {
+        console.log(yScale(d.count));
+        return (yScale(0) - yScale(d.count) > 0 ? '4' : '0');
+      })
       .attr("fill", "#a6192e")
       .attr("stroke", "#c6c4c4")
       .attr("stroke-width", "1")
