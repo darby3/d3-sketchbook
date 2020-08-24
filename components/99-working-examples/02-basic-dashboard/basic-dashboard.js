@@ -11,7 +11,7 @@
       "top": 20,
       "bottom": 45,
       "left": 50,
-      "right": 350
+      "right": 300
     }
 
     // data input and massaging
@@ -173,16 +173,16 @@
         .attr('class', 'statsBox statsBox--plain')
         .attr("transform", `translate(${width - margin.right + 48}, ${margin.top})`)
         .call(g => g.append('rect')
-          .attr("width", margin.right - 76)
+          .attr("width", margin.right - 70)
           .attr("height", `${height / 3 - 32}`))
         .call(g => g.append('text')
           .attr('class', 'smallLabel')
-          .attr('dx', `${(margin.right - 76) / 2}`)
+          .attr('dx', `${(margin.right - 70) / 2}`)
           .attr('dy', "35")
           .text("Tests result for"))
         .call(g => g.append('text')
           .attr('class', 'dateLabel')
-          .attr('dx', `${(margin.right - 76) / 2}`)
+          .attr('dx', `${(margin.right - 70) / 2}`)
           .attr('dy', "75")
           .text(d.dateRange));
 
@@ -191,17 +191,17 @@
         .attr('class', 'statsBox')
         .attr("transform", `translate(${width - margin.right + 48}, ${margin.top + height / 3 - 16})`)
         .call(g => g.append('rect')
-          .attr("width", margin.right - 76)
+          .attr("width", margin.right - 70)
           .attr("height", `${height / 3 - 32}`))
         .call(g => g.append('text')
           .attr('class', 'bigLabel')
-          .attr('dx', `${(margin.right - 76) / 2}`)
-          .attr('dy', "45")
+          .attr('dx', `${(margin.right - 70) / 2}`)
+          .attr('dy', "48")
           .text(d.total))
         .call(g => g.append('text')
           .attr('class', 'smallLabel')
-          .attr('dx', `${(margin.right - 76) / 2}`)
-          .attr('dy', "78")
+          .attr('dx', `${(margin.right - 70) / 2}`)
+          .attr('dy', "75")
           .text("tests performed"));
 
       svg.append("g")
@@ -209,17 +209,22 @@
         .attr('class', 'statsBox')
         .attr("transform", `translate(${width - margin.right + 48}, ${margin.top + height / 3 * 2 - 32})`)
         .call(g => g.append('rect')
-          .attr("width", margin.right - 76)
+          .attr("width", margin.right - 70)
           .attr("height", `${height / 3 - 32}`))
         .call(g => g.append('text')
           .attr('class', 'bigLabel')
-          .attr('dx', `${(margin.right - 76) / 2}`)
-          .attr('dy', "45")
-          .text(`${d.count} (${(d.percentage * 100).toFixed(2)}%)`))
+          .attr('dx', `${(margin.right - 70) / 2}`)
+          .attr('dy', "37")
+          .text(`${d.count}`))
+        .call(g => g.append('text')
+          .attr('class', 'mediumLabel')
+          .attr('dx', `${(margin.right - 70) / 2}`)
+          .attr('dy', "88")
+          .text(`(${(d.percentage * 100).toFixed(2)}%)`))
         .call(g => g.append('text')
           .attr('class', 'smallLabel')
-          .attr('dx', `${(margin.right - 76) / 2}`)
-          .attr('dy', "78")
+          .attr('dx', `${(margin.right - 70) / 2}`)
+          .attr('dy', "58")
           .text("positive results"));
     }
 
