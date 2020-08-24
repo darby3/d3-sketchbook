@@ -11,7 +11,7 @@
       "top": 20,
       "bottom": 45,
       "left": 50,
-      "right": 350
+      "right": 300
     }
 
     // data input and massaging
@@ -62,7 +62,7 @@
 
     const xAxis = d3.axisBottom(xScale)
       .tickValues(xScale.domain().filter(function (d, i) {
-        return !(i % 4)
+        return !(i % 2)
         // return true
       }));
 
@@ -78,7 +78,7 @@
         .attr('dy', '20')
         .style('font-size', '0.875rem'))
       .call(g => g.selectAll(".tick line")
-          .attr('y2', '12'));
+        .attr('y2', '12'));
 
     svg.append("g")
       .attr("transform", "translate(" + margin.left + ", 0)")
@@ -111,8 +111,11 @@
     // create a line function and use it to draw a line
 
     const line = d3.line()
-             .x(d => xScale(d.dateRange))
-             .y(d => yScale(d.count))
+      .defined((d) => {
+        return yScale(0) - yScale(d.count) > 0;
+      })
+      .x(d => xScale(d.dateRange))
+      .y(d => yScale(d.count))
 
     svg.append('path')
       .attr('d', line(datasetArray))
@@ -131,12 +134,19 @@
       .attr('class', 'point')
       .attr('cx', (d) => xScale(d.dateRange) + xScale.bandwidth() / 2)
       .attr("cy", (d) => yScale(d.count))
-      .attr("r", '4')
+      .attr("r", (d) => {
+        console.log(yScale(d.count));
+        return (yScale(0) - yScale(d.count) > 0 ? '4' : '0');
+      })
       .attr("fill", "#a6192e")
       .attr("stroke", "#c6c4c4")
       .attr("stroke-width", "1")
       .append('title')
       .text((d) => `id: ${d.id} / count: ${d.count}`);
+
+
+    // draw some additional shapes
+
 
     // d3.selection.prototype.first = function() {
     //   return d3.select(this[0]);
@@ -149,7 +159,90 @@
     // svg.selectAll('rect.bar[data-available="true"]').last()
     //   .dispatch('click');
 
-    const dataAvails = svg.selectAll('rect.bar[data-available="true"]').dispatch('click');
+    svg.append("g")
+      .attr('id', 'dateBox')
+      .attr('class', 'statsBox statsBox--plain')
+      .attr("transform", `translate(${width - margin.right + 48}, ${margin.top})`)
+      .call(g => g.append('text')
+        .attr('class', 'smallLabel')
+        .attr('dx', `${(margin.right - 70) / 2}`)
+        .attr('dy', "35")
+        .text("Tests result for")
+        .attr("fill-opacity", "0")
+        .transition()
+        .duration(750)
+        .ease(d3.easeSinOut)
+        .delay(0)
+        .style("fill-opacity", "1")
+      );
+
+    svg.append('g')
+      .attr('id', 'dataReadoutRects')
+      .attr("transform", `translate(${width - margin.right + 48}, ${margin.top + height / 3 - 32})`)
+      .call(g => g.append('rect')
+        .attr("id", "testsBox")
+        .attr("width", margin.right - 70)
+        .attr("height", `${height / 3 - 24}`)
+        .attr("rx", `8`)
+        .attr("transform", `translate(0, -20)`)
+        .style("fill-opacity", "0")
+        .transition()
+        .duration(500)
+        .ease(d3.easeSinOut)
+        .delay(500)
+        .style("fill-opacity", "1")
+        .attr("transform", `translate(0, 0)`)
+        .end()
+        .then(() => {
+          svg.select("#dataReadoutRects")
+            .call(g => g.append('text')
+              .attr('class', 'smallLabel')
+              .attr('dx', `${(margin.right - 70) / 2}`)
+              .attr('dy', "82")
+              .text("tests performed")
+              .style("fill-opacity", "0")
+              .transition()
+              .duration(500)
+              .ease(d3.easeSinOut)
+              .style("fill-opacity", "1")
+            )
+        })
+      )
+      .call(g => g.append('rect')
+        .attr("width", margin.right - 70)
+        .attr("height", `${height / 3 - 24}`)
+        .attr("rx", `8`)
+        .attr("y", `${margin.top + height / 3 - 34}`)
+        .attr("transform", `translate(0, -20)`)
+        .style("fill-opacity", "0")
+        .transition()
+        .duration(500)
+        .ease(d3.easeSinOut)
+        .delay(1000)
+        .style("fill-opacity", "1")
+        .attr("transform", `translate(0, 0)`)
+        .end()
+        .then(() => {
+          const dataAvails = svg.selectAll('rect.bar[data-available="true"]').dispatch('click');
+
+          svg.select("#dataReadoutRects")
+            .call(g => g.append('text')
+              .attr('class', 'smallLabel')
+              .attr('dx', `${(margin.right - 70) / 2}`)
+              .attr('dy', "181")
+              .text("positive results")
+              .style("fill-opacity", "0")
+              .transition()
+              .duration(500)
+              .ease(d3.easeSinOut)
+              .style("fill-opacity", "1")
+            )
+        })
+      );
+
+    // Activate the data readouts
+
+    // const dataAvails = svg.selectAll('rect.bar[data-available="true"]').dispatch('click');
 
     function barClickHandler(d, i) {
       console.log("click handled");
@@ -160,63 +253,73 @@
 
       d3.select(this).classed('selected', true);
 
-      svg.selectAll('g.statsBox').remove();
+      svg.selectAll('.bigLabel').remove();
+      svg.selectAll('.mediumLabel').remove();
+      svg.selectAll('.dateLabel').remove();
 
-      svg.append("g")
-        .attr('id', 'dateBox')
-        .attr('class', 'statsBox statsBox--plain')
-        .attr("transform", `translate(${width - margin.right + 48}, ${margin.top})`)
-        .call(g => g.append('rect')
-          .attr("width", margin.right - 76)
-          .attr("height", `${height / 3 - 32}`))
-        .call(g => g.append('text')
-          .attr('class', 'smallLabel')
-          .attr('dx', `${(margin.right - 76) / 2}`)
-          .attr('dy', "35")
-          .text("Tests result for"))
+      svg.select("g#dateBox")
         .call(g => g.append('text')
           .attr('class', 'dateLabel')
-          .attr('dx', `${(margin.right - 76) / 2}`)
+          .attr('dx', `${(margin.right - 70) / 2}`)
+          .attr('dy', "65")
+          .attr("fill-opacity", "0")
+          .text(d.dateRange)
+          .transition()
+          .duration(750)
+          .ease(d3.easeSinOut)
+          .delay(250)
           .attr('dy', "75")
-          .text(d.dateRange));
+          .style("fill-opacity", "1")
+        );
 
       svg.append("g")
         .attr('id', 'testsBox')
         .attr('class', 'statsBox')
         .attr("transform", `translate(${width - margin.right + 48}, ${margin.top + height / 3 - 16})`)
-        .call(g => g.append('rect')
-          .attr("width", margin.right - 76)
-          .attr("height", `${height / 3 - 32}`))
+        .attr("fill-opacity", "0")
         .call(g => g.append('text')
           .attr('class', 'bigLabel')
-          .attr('dx', `${(margin.right - 76) / 2}`)
-          .attr('dy', "45")
-          .text(d.total))
-        .call(g => g.append('text')
-          .attr('class', 'smallLabel')
-          .attr('dx', `${(margin.right - 76) / 2}`)
-          .attr('dy', "78")
-          .text("tests performed"));
+          .attr('dx', `${(margin.right - 70) / 2}`)
+          .attr('dy', "25")
+          .text(d.total)
+          .transition()
+          .duration(750)
+          .ease(d3.easeSinOut)
+          .delay(500)
+          .style("fill-opacity", "1")
+          .attr('dy', "35")
+        );
 
       svg.append("g")
         .attr('id', 'positivesBox')
         .attr('class', 'statsBox')
         .attr("transform", `translate(${width - margin.right + 48}, ${margin.top + height / 3 * 2 - 32})`)
-        .call(g => g.append('rect')
-          .attr("width", margin.right - 76)
-          .attr("height", `${height / 3 - 32}`))
         .call(g => g.append('text')
           .attr('class', 'bigLabel')
-          .attr('dx', `${(margin.right - 76) / 2}`)
-          .attr('dy', "45")
-          .text(`${d.count} (${(d.percentage * 100).toFixed(2)}%)`))
+          .attr('dx', `${(margin.right - 70) / 2}`)
+          .attr('dy', "14")
+          .attr("fill-opacity", "0")
+          .text(`${d.count}`)
+          .transition()
+          .duration(750)
+          .ease(d3.easeSinOut)
+          .delay(750)
+          .attr('dy', "24")
+          .style("fill-opacity", "1")
+        )
         .call(g => g.append('text')
-          .attr('class', 'smallLabel')
-          .attr('dx', `${(margin.right - 76) / 2}`)
-          .attr('dy', "78")
-          .text("positive results"));
+          .attr('class', 'mediumLabel')
+          .attr('dx', `${(margin.right - 70) / 2}`)
+          .attr('dy', "85")
+          .attr("fill-opacity", "0")
+          .text(`(${(d.percentage * 100).toFixed(2)}%)`)
+          .transition()
+          .duration(750)
+          .ease(d3.easeSinOut)
+          .delay(1000)
+          .attr('dy', "75")
+          .style("fill-opacity", "1")
+        )
     }
-
-
   });
 })();
