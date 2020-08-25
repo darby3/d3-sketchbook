@@ -105,7 +105,7 @@
       .attr("data-available", (d) => (d.total > 0))
       .on("click", barClickHandler)
       .append('title')
-      .text((d) => `id: ${d.id} / total: ${d.total}`);
+      .text((d) => `Total tests for ${d.dateRange}: ${d.total}`);
 
 
     // create a line function and use it to draw a line
@@ -142,7 +142,11 @@
       .attr("stroke", "#c6c4c4")
       .attr("stroke-width", "1")
       .append('title')
-      .text((d) => `id: ${d.id} / count: ${d.count}`);
+      .text((d) => `Positive tests for ${d.dateRange}: ${d.count}`);
+
+    // svg.select('rect.bar:last-of-type').dispatch('click');
+
+    svg.selectAll('rect.bar[data-available="true"]').dispatch('click');
 
 
     // draw some additional shapes
