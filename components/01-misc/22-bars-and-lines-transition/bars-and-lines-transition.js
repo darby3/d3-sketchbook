@@ -134,12 +134,12 @@
       console.log(this);
 
       if (this.getAttribute('data-zoomed') === 'false') {
-        const maxNumber = d3.max(datasetArray, (d) => d.count);
-        svg.update([0, maxNumber + 5]);
         this.setAttribute('data-zoomed', 'true');
+        const maxNumber = d3.max(datasetArray, (d) => d.count);
+        svg.update([0, maxNumber + 2]);
       } else {
-        svg.update([0, d3.max(datasetArray, (d) => d.total)])
         this.setAttribute('data-zoomed', 'false');
+        svg.update([0, d3.max(datasetArray, (d) => d.total)])
       }
     })
 
@@ -148,10 +148,49 @@
       update(domain) {
         console.log("updating");
 
-        const t = svg.transition().duration(750);
+        // we need this
+        const zoomed = triggerButton.getAttribute('data-zoomed');
+
+        const t = svg.transition()
+          .duration(1250)
+          .ease(d3.easeCubicIn);
         yScale.domain(domain);
-        gy.transition(t).call(yAxis, yScale);
-        chillPath.transition(t).attr("d", line(datasetArray));
+
+        // reset the y axis
+        gy.transition(t)
+          .call(yAxis, yScale);
+
+        // zoom the line
+        chillPath.transition(t)
+          .attr("d", line(datasetArray));
+
+        // zoom the circles?
+
+        const dotRadius = (zoomed === 'true') ? '12' : '4';
+        const strokeWidth = (zoomed === 'true') ? '2' : '0';
+        const strokeColor = (zoomed === 'true') ? '#363232' : '#fff';
+
+        svg.selectAll("circle.point").transition(t)
+          .attr("cy", (d) => yScale(d.count))
+          .attr("r", dotRadius)
+          .style("stroke-width", strokeWidth)
+          .style("stroke", strokeColor);
+
+        // zoom the rects?
+
+        if (zoomed === "true") {
+          svg.selectAll("rect.bar").transition(t)
+            .attr("height", (d) => yScale(0) - yScale(d.total))
+            .attr("y", (d) => yScale(d.total))
+            .style("fill", '#efefef')
+            .style("stroke", '#c6c4c4');
+        } else {
+          svg.selectAll("rect.bar").transition(t)
+            .attr("height", (d) => yScale(0) - yScale(d.total))
+            .attr("y", (d) => yScale(d.total))
+            .style("fill", '#c6c4c4')
+            .style("stroke", '#fff');
+        }
       }
     })
 
