@@ -68,7 +68,7 @@
 
     const yAxis = d3.axisLeft(yScale).ticks(5);
 
-    svg.append("g")
+    const gx = svg.append("g")
       .attr("transform", "translate(0, " + (height - margin.bottom) + ")")
       .call(xAxis)
       .call(g => g.selectAll(".domain")
@@ -80,7 +80,7 @@
       .call(g => g.selectAll(".tick line")
         .attr('y2', '12'));
 
-    svg.append("g")
+    const gy = svg.append("g")
       .attr("transform", "translate(" + margin.left + ", 0)")
       .call(yAxis)
       .call(g => g.selectAll(".domain")
@@ -105,7 +105,7 @@
       .attr("data-available", (d) => (d.total > 0))
       .on("click", barClickHandler)
       .append('title')
-      .text((d) => `id: ${d.id} / total: ${d.total}`);
+      .text((d) => `Total tests for ${d.dateRange}: ${d.total}`);
 
 
     // create a line function and use it to draw a line
@@ -117,11 +117,11 @@
       .x(d => xScale(d.dateRange))
       .y(d => yScale(d.count))
 
-    svg.append('path')
+    const chillPath = svg.append('path')
       .attr('d', line(datasetArray))
       .attr('fill', 'none')
-      .attr('stroke', '#363232')
-      .attr('stroke-width', '1')
+      .attr('stroke', '#e81727')
+      .attr('stroke-width', '1.5')
       .attr('stroke-linejoin', 'round')
       .attr('transform', 'translate(' + xScale.bandwidth() / 2 + ', 0)');
 
@@ -135,29 +135,24 @@
       .attr('cx', (d) => xScale(d.dateRange) + xScale.bandwidth() / 2)
       .attr("cy", (d) => yScale(d.count))
       .attr("r", (d) => {
-        console.log(yScale(d.count));
         return (yScale(0) - yScale(d.count) > 0 ? '4' : '0');
       })
-      .attr("fill", "#a6192e")
-      .attr("stroke", "#c6c4c4")
-      .attr("stroke-width", "1")
       .append('title')
-      .text((d) => `id: ${d.id} / count: ${d.count}`);
+      .text((d) => `Positive tests for ${d.dateRange}: ${d.count}`);
+
+    svg.selectAll("circle.point")
+      .each(function(p) {
+        const d3this = d3.select(this);
+        if (p.count === 0) {
+          d3.select(this).remove();
+        }
+      })
+
+    svg.selectAll('rect.bar[data-available="true"]').dispatch('click');
 
 
     // draw some additional shapes
 
-
-    // d3.selection.prototype.first = function() {
-    //   return d3.select(this[0]);
-    // };
-    // d3.selection.prototype.last = function() {
-    //   var last = this.size() - 1;
-    //   return d3.select(this[last]);
-    // };
-    //
-    // svg.selectAll('rect.bar[data-available="true"]').last()
-    //   .dispatch('click');
 
     svg.append("g")
       .attr('id', 'dateBox')
@@ -242,8 +237,6 @@
 
     // Activate the data readouts
 
-    // const dataAvails = svg.selectAll('rect.bar[data-available="true"]').dispatch('click');
-
     function barClickHandler(d, i) {
       console.log("click handled");
 
@@ -321,5 +314,77 @@
           .style("fill-opacity", "1")
         )
     }
+
+    // Zoom updater
+
+    const triggerButton = document.querySelector("#zoomToggle");
+    triggerButton.setAttribute('data-zoomed', 'false');
+
+    triggerButton.addEventListener('click', function () {
+      if (this.getAttribute('data-zoomed') === 'false') {
+        this.setAttribute('data-zoomed', 'true');
+        const maxNumber = d3.max(datasetArray, (d) => d.count);
+        svg.update([0, maxNumber + 2]);
+      } else {
+        this.setAttribute('data-zoomed', 'false');
+        svg.update([0, d3.max(datasetArray, (d) => d.total)])
+      }
+    })
+
+    Object.assign(svg, {
+      update(domain) {
+        console.log("updating");
+
+        // we need this
+        const zoomed = triggerButton.getAttribute('data-zoomed');
+
+        const t = svg.transition()
+          .duration(1250)
+          .ease(d3.easeCubicInOut);
+
+        const tFast = svg.transition()
+          .duration(750)
+          .ease(d3.easeCubicInOut);
+
+        yScale.domain(domain);
+
+        // reset the y axis
+        gy.transition(t)
+          .call(yAxis, yScale);
+
+        // zoom the line
+        chillPath.transition(t)
+          .attr("d", line(datasetArray));
+
+        // zoom the circles?
+
+        const dotRadius = (zoomed === 'true') ? '8' : '4';
+        const strokeWidth = (zoomed === 'true') ? '1.5' : '1';
+        const circleFill = (zoomed === 'true') ? '#fff' : '#efefef';
+
+        svg.selectAll("circle.point").transition(t)
+          .attr("cy", (d) => yScale(d.count))
+          .attr("r", dotRadius)
+          .style("stroke-width", strokeWidth)
+          .style("fill", circleFill);
+
+        // zoom the rects?
+
+        if (zoomed === "true") {
+          svg.selectAll("rect.bar").transition(tFast)
+            .attr("height", (d) => yScale(0) - yScale(d.total))
+            .attr("y", (d) => yScale(d.total))
+            .style("fill", '#efefef')
+            .style("stroke", '#c6c4c4');
+        } else {
+          svg.selectAll("rect.bar").transition(tFast)
+            .attr("height", (d) => yScale(0) - yScale(d.total))
+            .attr("y", (d) => yScale(d.total))
+            .style("fill", '#c6c4c4')
+            .style("stroke", '#fff');
+        }
+      }
+    })
+
   });
 })();

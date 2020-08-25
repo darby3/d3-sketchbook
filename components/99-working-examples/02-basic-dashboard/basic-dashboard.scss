@@ -18,6 +18,8 @@
       transition: fill 0.25s ease-out;
       fill: $lightergray;
       fill-opacity: 0.8;
+      stroke: #fff;
+      stroke-width: 0.5;
 
       &:hover {
         cursor: pointer;
@@ -25,9 +27,15 @@
       }
 
       &.selected {
-        fill: $darkred;
+        fill: $darkred !important;
         fill-opacity: 1;
       }
+    }
+
+    circle.point {
+      fill: #efefef;
+      stroke: #e81727;
+      stroke-width: 1;
     }
   }
 
