@@ -34,9 +34,51 @@
 
     circle.point {
       fill: #efefef;
-      stroke: #e81727;
+      stroke: $darkgray;
       stroke-width: 1;
     }
+
+    .trendLine {
+      stroke: $darkgray;
+      stroke-width: 1.5;
+      stroke-linejoin: round;
+      fill: none;
+    }
+
+    .xAxis {
+      .domain {
+        stroke: #323232;
+      }
+
+      .tick text {
+        fill: #787272;
+        font-size: 0.875rem;
+      }
+
+      .tick line {
+        stroke: #c6c4c4
+      }
+    }
+
+    .yAxis {
+      .domain {
+        stroke: #323232;
+      }
+      .tick text {
+        fill: #787272;
+      }
+      .tick line {
+        stroke: #c6c4c4;
+      }
+    }
+  }
+
+  .positivesCounts {
+    font-family: Verdana, sans-serif;
+    font-size: 0.75rem;
+    text-anchor: middle;
+    fill: $lightred;
+    font-weight: 700;
   }
 
   .smallLabel {
