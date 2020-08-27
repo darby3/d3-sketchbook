@@ -299,7 +299,7 @@
       if (this.getAttribute('data-zoomed') === 'false') {
         this.setAttribute('data-zoomed', 'true');
         const maxNumber = d3.max(datasetArray, (d) => d.positiveCount);
-        svg.update([0, maxNumber + 2]);
+        svg.update([0, maxNumber + 4]);
         this.innerText = "Zoom Out";
       } else {
         this.setAttribute('data-zoomed', 'false');
@@ -336,7 +336,7 @@
 
         // Redraw the circles
 
-        const dotRadius = (zoomed === 'true') ? '8' : '4';
+        const dotRadius = (zoomed === 'true') ? '15' : '4';
         const strokeWidth = (zoomed === 'true') ? '1.5' : '1';
         const circleFill = (zoomed === 'true') ? '#fff' : '#efefef';
 
@@ -356,6 +356,42 @@
           .attr("y", (d) => yScale(d.totalCount))
           .style("fill", barsFill)
           .style("stroke", barsStroke);
+
+        // Draw the positives counts?
+        if (zoomed === "true") {
+          svg.selectAll('text.positivesCounts')
+            .data(datasetArray)
+            .enter()
+            .append('text')
+            .attr('class', 'positivesCounts')
+            .attr('x', (d) => xScale(d.end) + xScale.bandwidth() / 2)
+            .attr('y', (d) => yScale(d.positiveCount))
+            .attr('dy', '-4')
+            .attr('fill-opacity', '0')
+            .text((d) => `${d.positiveCount}`)
+            .transition(t)
+            .delay((d, i) => (i * 100) + 750)
+            .attr('dy', '4')
+            .attr('fill-opacity', '1');
+
+          svg.selectAll("text.positivesCounts")
+            .each(function (p) {
+              if (p.totalCount === 0) {
+                d3.select(this).remove();
+              }
+            });
+        } else {
+          svg.selectAll("text.positivesCounts")
+            .transition()
+            .duration(100)
+            .attr('fill-opacity', '0')
+            .end()
+            .then(() => {
+              svg.selectAll("text.positivesCounts")
+                .remove();
+            });
+        }
+
       }
     })
 
