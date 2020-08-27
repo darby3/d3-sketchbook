@@ -34,8 +34,14 @@
 
     circle.point {
       fill: #efefef;
-      stroke: #e81727;
+      stroke: $darkgray;
       stroke-width: 1;
+    }
+
+    .trendLine {
+      stroke: $darkgray;
+      stroke-width: 1.5;
+      stroke-linejoin: round;
     }
   }
 

@@ -116,14 +116,12 @@
         return yScale(0) - yScale(d.total) > 0;
       })
       .x(d => xScale(d.end))
-      .y(d => yScale(d.count))
+      .y(d => yScale(d.count));
 
     const chillPath = svg.append('path')
       .attr('d', line(datasetArray))
+      .attr('class', 'trendLine')
       .attr('fill', 'none')
-      .attr('stroke', '#e81727')
-      .attr('stroke-width', '1.5')
-      .attr('stroke-linejoin', 'round')
       .attr('transform', 'translate(' + xScale.bandwidth() / 2 + ', 0)');
 
     // plot the points as basic circles
@@ -328,9 +326,11 @@
         this.setAttribute('data-zoomed', 'true');
         const maxNumber = d3.max(datasetArray, (d) => d.count);
         svg.update([0, maxNumber + 2]);
+        this.innerText = "Zoom Out";
       } else {
         this.setAttribute('data-zoomed', 'false');
-        svg.update([0, d3.max(datasetArray, (d) => d.total)])
+        svg.update([0, d3.max(datasetArray, (d) => d.total)]);
+        this.innerText = "Zoom In";
       }
     })
 
@@ -357,7 +357,8 @@
 
         // zoom the line
         chillPath.transition(t)
-          .attr("d", line(datasetArray));
+          .attr("d", line(datasetArray))
+          .style("stroke-width", (zoomed === 'true') ? "3" : "1.5");
 
         // zoom the circles?
 
