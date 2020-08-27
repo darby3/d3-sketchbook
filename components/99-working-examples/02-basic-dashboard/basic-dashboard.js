@@ -1,9 +1,8 @@
 (function () {
   document.addEventListener('DOMContentLoaded', function () {
     console.log("basic-dashboard active");
-    console.log("basic-dashboard active for real");
 
-    // config
+    // Config
 
     const width = 1000;
     const height = 400;
@@ -14,7 +13,7 @@
       "right": 300
     }
 
-    // data input and massaging
+    // Data initialization
 
     let datasetArray = [];
 
@@ -24,21 +23,20 @@
         start: dataset[i].dateStart,
         end: dataset[i].dateEnd,
         dateRange: dataset[i].dateStart + '–' + dataset[i].dateEnd,
-        count: dataset[i].number,
-        total: dataset[i].total,
-        percentage: dataset[i].number / dataset[i].total
+        positiveCount: dataset[i].number,
+        totalCount: dataset[i].total,
+        percentagePositive: dataset[i].number / dataset[i].total
       })
     }
 
-    // lets set the top of our y axis to the nearest 100th
+    // Set the top of the y axis to the nearest 100
 
-    let yScaleTarget = d3.max(datasetArray, (d) => d.total);
-
+    let yScaleTarget = d3.max(datasetArray, (d) => d.totalCount);
     while (yScaleTarget % 100) {
       yScaleTarget++;
     }
 
-    // scales
+    // Scales
 
     const xScale = d3.scaleBand()
       .domain(datasetArray.map(d => d.end))
@@ -50,81 +48,62 @@
       .domain([0, yScaleTarget])
       .range([height - margin.bottom, margin.top]);
 
-
-    // svg output
+    // Create the svg container
 
     const svg = d3.select("#svgOutput")
       .append("svg")
       .attr("viewBox", [0, 0, width, height])
       .attr("preserveAspectRatio", "xMidYMid meet");
 
-    // axes
+    // Create and draw the axes
 
-    const xAxis = d3.axisBottom(xScale)
-      .tickValues(xScale.domain().filter(function (d, i) {
-        // return !(i % 2)
-        return true
-      }));
-
+    const xAxis = d3.axisBottom(xScale);
     const yAxis = d3.axisLeft(yScale).ticks(5);
 
     const gx = svg.append("g")
+      .attr('class', 'xAxis')
       .attr("transform", "translate(0, " + (height - margin.bottom) + ")")
       .call(xAxis)
-      .call(g => g.selectAll(".domain")
-        .attr('stroke', '#787272'))
       .call(g => g.selectAll(".tick text")
-        .attr('fill', '#787272')
-        .attr('dy', '20')
-        .style('font-size', '0.875rem'))
+        .attr('dy', '18'))
       .call(g => g.selectAll(".tick line")
-        .attr('y2', '12'));
+        .attr('y2', '10'));
 
     const gy = svg.append("g")
+      .attr('class', 'yAxis')
       .attr("transform", "translate(" + margin.left + ", 0)")
-      .call(yAxis)
-      .call(g => g.selectAll(".domain")
-        .attr('stroke', '#c6c4c4'))
-      .call(g => g.selectAll(".tick text")
-        .attr('fill', '#787272'))
-      .call(g => g.selectAll(".tick line")
-        .attr('stroke', '#c6c4c4'));
+      .call(yAxis);
 
-
-    // add some bars
+    // Draw the bars
 
     svg.selectAll("rect.bar")
       .data(datasetArray)
       .join('rect')
       .attr('class', 'bar')
-      .attr('x', (d, i) => xScale(d.end))
-      .attr("y", (d) => yScale(d.total))
-      .attr("width", () => xScale.bandwidth())
-      .attr("height", (d) => yScale(0) - yScale(d.total))
-      .attr("data-total", (d) => (d.total))
-      .attr("data-available", (d) => (d.total > 0))
-      .on("click", barClickHandler)
+      .attr('x', (d) => xScale(d.end))
+      .attr('y', (d) => yScale(d.totalCount))
+      .attr('width', () => xScale.bandwidth())
+      .attr('height', (d) => yScale(0) - yScale(d.totalCount))
+      .attr('data-total', (d) => (d.totalCount))
+      .attr('data-available', (d) => (d.totalCount > 0))
+      .attr('data-id', (d) => d.id)
+      .on('click', barClickHandler)
       .append('title')
-      .text((d) => `Total tests for ${d.end}: ${d.total}`);
+      .text((d) => `Total tests for ${d.end}: ${d.totalCount}`);
 
-
-    // create a line function and use it to draw a line
+    // Create a line function and use it to draw the positives line
 
     const line = d3.line()
-      .defined((d) => {
-//        return yScale(0) - yScale(d.count) > 0;
-        return yScale(0) - yScale(d.total) > 0;
-      })
+      .defined((d) => (yScale(0) - yScale(d.totalCount) > 0))
       .x(d => xScale(d.end))
-      .y(d => yScale(d.count));
+      .y(d => yScale(d.positiveCount));
 
-    const chillPath = svg.append('path')
+    const positivesLine = svg.append('path')
       .attr('d', line(datasetArray))
       .attr('class', 'trendLine')
-      .attr('fill', 'none')
       .attr('transform', 'translate(' + xScale.bandwidth() / 2 + ', 0)');
 
-    // plot the points as basic circles
+    // Draw positive counts circles
 
     svg.selectAll("circle.point")
       .data(datasetArray)
@@ -132,261 +111,251 @@
       .append('circle')
       .attr('class', 'point')
       .attr('cx', (d) => xScale(d.end) + xScale.bandwidth() / 2)
-      .attr("cy", (d) => yScale(d.count))
-      .attr("r", (d) => {
-//        return (yScale(0) - yScale(d.count) > 0 ? '4' : '0');
-        return (yScale(0) - yScale(d.count) >= 0 ? '4' : '0');
-      })
+      .attr('cy', (d) => yScale(d.positiveCount))
+      .attr('r', (d) => yScale(0) - yScale(d.positiveCount) >= 0 ? '4' : '0')
       .append('title')
-      .text((d) => `Positive tests for ${d.end}: ${d.count}`);
+      .text((d) => `Positive tests for ${d.end}: ${d.positiveCount}`);
 
     svg.selectAll("circle.point")
-      .each(function(p) {
-        const d3this = d3.select(this);
-//        if (p.count === 0) {
-        if (p.total === 0) {
+      .each(function (p) {
+        if (p.totalCount === 0) {
           d3.select(this).remove();
         }
-      })
+      });
 
-    svg.selectAll('rect.bar[data-available="true"]').dispatch('click');
+    // Draw data readout shapes and labels
+    // TODO: there's some magic numbers in here which could be turned into config vars, probably
 
+    const dataAlignments = {
+      rectX: width - margin.right + 48,
+      rectH: height / 3 - 24,
+      textX: (margin.right - 70) / 2
+    }
 
-    // draw some additional shapes
+    // Date box
 
-
-    svg.append("g")
+    const dataDatebox = svg.append("g")
       .attr('id', 'dateBox')
       .attr('class', 'statsBox statsBox--plain')
-      .attr("transform", `translate(${width - margin.right + 48}, ${margin.top})`)
-      .call(g => g.append('text')
-        .attr('class', 'smallLabel')
-        .attr('dx', `${(margin.right - 70) / 2}`)
-        .attr('dy', "35")
-        .text("For the week reported on")
-        .attr("fill-opacity", "0")
-        .transition()
-        .duration(750)
-        .ease(d3.easeSinOut)
-        .delay(0)
-        .style("fill-opacity", "1")
-      );
+      .attr('transform', `translate(${dataAlignments.rectX}, ${margin.top})`);
 
-    svg.append('g')
+    dataDatebox.call(g => g.append('text')
+      .attr('class', 'smallLabel')
+      .attr('dx', `${dataAlignments.textX}`)
+      .attr('dy', '35')
+      .text('For the week reported on')
+      .attr('fill-opacity', '0')
+      .transition()
+      .duration(750)
+      .ease(d3.easeSinOut)
+      .delay(0)
+      .style('fill-opacity', '1')
+    );
+
+    // Data Readout boxes
+
+    const rectT = d3.transition().duration(500).ease(d3.easeSinOut);
+
+    const dataReadoutRects = svg.append('g')
       .attr('id', 'dataReadoutRects')
-      .attr("transform", `translate(${width - margin.right + 48}, ${margin.top + height / 3 - 32})`)
-      .call(g => g.append('rect')
-        .attr("id", "testsBox")
-        .attr("width", margin.right - 70)
-        .attr("height", `${height / 3 - 24}`)
-        .attr("rx", `8`)
-        .attr("transform", `translate(0, -20)`)
-        .style("fill-opacity", "0")
-        .transition()
-        .duration(500)
-        .ease(d3.easeSinOut)
-        .delay(500)
-        .style("fill-opacity", "1")
-        .attr("transform", `translate(0, 0)`)
-        .end()
-        .then(() => {
-          svg.select("#dataReadoutRects")
-            .call(g => g.append('text')
-              .attr('class', 'smallLabel')
-              .attr('dx', `${(margin.right - 70) / 2}`)
-              .attr('dy', "82")
-              .text("tests processed")
-              .style("fill-opacity", "0")
-              .transition()
-              .duration(500)
-              .ease(d3.easeSinOut)
-              .style("fill-opacity", "1")
-            )
-        })
-      )
-      .call(g => g.append('rect')
-        .attr("width", margin.right - 70)
-        .attr("height", `${height / 3 - 24}`)
-        .attr("rx", `8`)
-        .attr("y", `${margin.top + height / 3 - 34}`)
-        .attr("transform", `translate(0, -20)`)
-        .style("fill-opacity", "0")
-        .transition()
-        .duration(500)
-        .ease(d3.easeSinOut)
-        .delay(1000)
-        .style("fill-opacity", "1")
-        .attr("transform", `translate(0, 0)`)
-        .end()
-        .then(() => {
-          const dataAvails = svg.selectAll('rect.bar[data-available="true"]').dispatch('click');
+      .attr('transform', `translate(${dataAlignments.rectX}, ${margin.top + height / 3 - 32})`);
 
-          svg.select("#dataReadoutRects")
-            .call(g => g.append('text')
-              .attr('class', 'smallLabel')
-              .attr('dx', `${(margin.right - 70) / 2}`)
-              .attr('dy', "181")
-              .text("positive results")
-              .style("fill-opacity", "0")
-              .transition()
-              .duration(500)
-              .ease(d3.easeSinOut)
-              .style("fill-opacity", "1")
-            )
-        })
-      );
+    const dataTestsBox = dataReadoutRects.call(g => g.append('rect')
+      .attr('id', 'testsBox')
+      .attr('width', margin.right - 70)
+      .attr('height', `${dataAlignments.rectH}`)
+      .attr('rx', `8`)
+      .attr('transform', `translate(0, -20)`)
+      .style('fill-opacity', '0')
+      .transition(rectT)
+      .delay(500)
+      .style('fill-opacity', '1')
+      .attr('transform', `translate(0, 0)`)
+      .end()
+      .then(() => {
+        svg.select('#dataReadoutRects')
+          .call(g => g.append('text')
+            .attr('class', 'smallLabel')
+            .attr('dx', `${dataAlignments.textX}`)
+            .attr('dy', '82')
+            .text('tests processed')
+            .style('fill-opacity', '0')
+            .transition(rectT)
+            .style('fill-opacity', '1')
+          )
+      })
+    );
 
-    // Activate the data readouts
+    const dataResultsBox = dataReadoutRects.call(g => g.append('rect')
+      .attr('id', 'resultsBox')
+      .attr('width', margin.right - 70)
+      .attr('height', `${dataAlignments.rectH}`)
+      .attr('rx', `8`)
+      .attr('y', `${dataAlignments.rectH + 12}`)
+      .attr('transform', `translate(0, 20)`)
+      .style('fill-opacity', '0')
+      .transition(rectT)
+      .delay(1000)
+      .style('fill-opacity', '1')
+      .attr('transform', `translate(0, 0)`)
+      .end()
+      .then(() => {
+        // Send a click to every bar, in order to activate the last active bar.
+        // TODO: find a better way to do this
+        svg.selectAll('rect.bar[data-available="true"]').dispatch('click');
 
-    function barClickHandler(d, i) {
-      console.log("click handled");
+        svg.select('#dataReadoutRects')
+          .call(g => g.append('text')
+            .attr('class', 'smallLabel')
+            .attr('dx', `${dataAlignments.textX}`)
+            .attr('dy', '181')
+            .text('positive results')
+            .style('fill-opacity', '0')
+            .transition(rectT)
+            .style('fill-opacity', '1')
+          )
+      })
+    );
 
+    // Zoom in/out button
+
+    const zoomButton = document.querySelector("#zoomToggle");
+    zoomButton.setAttribute('data-zoomed', 'false');
+    zoomButton.addEventListener('click', zoomButtonClickHandler);
+
+    // Update data readouts when bars are clicked
+
+    function barClickHandler(d) {
       if (svg.select('.selected').size() > 0) {
         svg.select('.selected').classed('selected', false);
       }
 
       d3.select(this).classed('selected', true);
 
+      // TODO: rename classes more better
       svg.selectAll('.bigLabel').remove();
       svg.selectAll('.mediumLabel').remove();
       svg.selectAll('.dateLabel').remove();
 
-      svg.select("g#dateBox")
-        .call(g => g.append('text')
-          .attr('class', 'dateLabel')
-          .attr('dx', `${(margin.right - 70) / 2}`)
-          .attr('dy', "65")
-          .attr("fill-opacity", "0")
-          .text(d.end)
-          .transition()
-          .duration(750)
-          .ease(d3.easeSinOut)
-          .delay(250)
-          .attr('dy', "75")
-          .style("fill-opacity", "1")
-        );
+      // Data readout transition
+      const t = d3.transition().duration(450).ease(d3.easeSinOut);
 
-      svg.append("g")
-        .attr('id', 'testsBox')
-        .attr('class', 'statsBox')
-        .attr("transform", `translate(${width - margin.right + 48}, ${margin.top + height / 3 - 16})`)
-        .attr("fill-opacity", "0")
-        .call(g => g.append('text')
-          .attr('class', 'bigLabel')
-          .attr('dx', `${(margin.right - 70) / 2}`)
-          .attr('dy', "25")
-          .text(d.total)
-          .transition()
-          .duration(750)
-          .ease(d3.easeSinOut)
-          .delay(500)
-          .style("fill-opacity", "1")
-          .attr('dy', "35")
-        );
+      // Draw the report date
+      dataDatebox.call(g => g.append('text')
+        .attr('class', 'dateLabel')
+        .attr('dx', `${dataAlignments.textX}`)
+        .attr('dy', '65')
+        .attr('fill-opacity', '0')
+        .text(d.end)
+        .transition(t)
+        .delay(250)
+        .attr('dy', '75')
+        .style('fill-opacity', '1')
+      );
 
-      svg.append("g")
-        .attr('id', 'positivesBox')
-        .attr('class', 'statsBox')
-        .attr("transform", `translate(${width - margin.right + 48}, ${margin.top + height / 3 * 2 - 32})`)
-        .call(g => g.append('text')
-          .attr('class', 'bigLabel')
-          .attr('dx', `${(margin.right - 70) / 2}`)
-          .attr('dy', "14")
-          .attr("fill-opacity", "0")
-          .text(`${d.count}`)
-          .transition()
-          .duration(750)
-          .ease(d3.easeSinOut)
-          .delay(750)
-          .attr('dy', "24")
-          .style("fill-opacity", "1")
-        )
-        .call(g => g.append('text')
-          .attr('class', 'mediumLabel')
-          .attr('dx', `${(margin.right - 70) / 2}`)
-          .attr('dy', "85")
-          .attr("fill-opacity", "0")
-          .text(`(${(d.percentage * 100).toFixed(2)}%)`)
-          .transition()
-          .duration(750)
-          .ease(d3.easeSinOut)
-          .delay(1000)
-          .attr('dy', "75")
-          .style("fill-opacity", "1")
-        )
+      // Draw the tests performed number
+      dataReadoutRects.call(g => g.append('text')
+        .attr('class', 'bigLabel')
+        .attr('dx', `${dataAlignments.textX}`)
+        .attr('dy', '35')
+        .style('fill-opacity', '0')
+        .text(d.totalCount)
+        .transition(t)
+        .delay(500)
+        .style('fill-opacity', '1')
+        .attr('dy', '50')
+      );
+
+      // Draw the positive test results number
+      dataReadoutRects.call(g => g.append('text')
+        .attr('class', 'bigLabel')
+        .attr('dx', `${dataAlignments.textX}`)
+        .attr('dy', '146')
+        .attr('fill-opacity', '0')
+        .text(`${d.positiveCount}`)
+        .transition(t)
+        .delay(750)
+        .attr('dy', '156')
+        .style('fill-opacity', '1')
+      );
+
+      // Draw the positive test percentage number
+      dataReadoutRects.call(g => g.append('text')
+        .attr('class', 'mediumLabel')
+        .attr('dx', `${dataAlignments.textX}`)
+        .attr('dy', '220')
+        .attr('fill-opacity', '0')
+        .text(`(${(d.percentagePositive * 100).toFixed(2)}%)`)
+        .transition(t)
+        .delay(1000)
+        .attr('dy', '210')
+        .style('fill-opacity', '1')
+      )
     }
 
-    // Zoom updater
+    // Update chart when zoom button clicked
 
-    const triggerButton = document.querySelector("#zoomToggle");
-    triggerButton.setAttribute('data-zoomed', 'false');
-
-    triggerButton.addEventListener('click', function () {
+    function zoomButtonClickHandler() {
       if (this.getAttribute('data-zoomed') === 'false') {
         this.setAttribute('data-zoomed', 'true');
-        const maxNumber = d3.max(datasetArray, (d) => d.count);
+        const maxNumber = d3.max(datasetArray, (d) => d.positiveCount);
         svg.update([0, maxNumber + 2]);
         this.innerText = "Zoom Out";
       } else {
         this.setAttribute('data-zoomed', 'false');
-        svg.update([0, d3.max(datasetArray, (d) => d.total)]);
+        svg.update([0, d3.max(datasetArray, (d) => d.totalCount)]);
         this.innerText = "Zoom In";
       }
-    })
+    }
+
+    // Add an update method (or update the update method?) on the svg object.
+    // Basically: this is where we handle all the cool transitions in the chart.
 
     Object.assign(svg, {
       update(domain) {
-        console.log("updating");
+        // Are we zoomed?
+        const zoomed = zoomButton.getAttribute('data-zoomed');
 
-        // we need this
-        const zoomed = triggerButton.getAttribute('data-zoomed');
+        // Transition functions
+        const t = svg.transition().duration(1250).ease(d3.easeCubicInOut);
+        const tFast = svg.transition().duration(750).ease(d3.easeCubicInOut);
 
-        const t = svg.transition()
-          .duration(1250)
-          .ease(d3.easeCubicInOut);
-
-        const tFast = svg.transition()
-          .duration(750)
-          .ease(d3.easeCubicInOut);
-
+        // Update the yScale domain
         yScale.domain(domain);
 
-        // reset the y axis
-        gy.transition(t)
-          .call(yAxis, yScale);
+        // Redraw the yAxis
+        gy.transition(t).call(yAxis, yScale);
 
-        // zoom the line
-        chillPath.transition(t)
+        // Redraw the positives trend line
+
+        const lineStrokeWidth = (zoomed === 'true') ? "3" : "1.5";
+
+        positivesLine.transition(t)
           .attr("d", line(datasetArray))
-          .style("stroke-width", (zoomed === 'true') ? "3" : "1.5");
+          .style("stroke-width", lineStrokeWidth);
 
-        // zoom the circles?
+        // Redraw the circles
 
         const dotRadius = (zoomed === 'true') ? '8' : '4';
         const strokeWidth = (zoomed === 'true') ? '1.5' : '1';
         const circleFill = (zoomed === 'true') ? '#fff' : '#efefef';
 
         svg.selectAll("circle.point").transition(t)
-          .attr("cy", (d) => yScale(d.count))
+          .attr("cy", (d) => yScale(d.positiveCount))
           .attr("r", dotRadius)
           .style("stroke-width", strokeWidth)
           .style("fill", circleFill);
 
-        // zoom the rects?
+        // Redraw the bars
 
-        if (zoomed === "true") {
-          svg.selectAll("rect.bar").transition(tFast)
-            .attr("height", (d) => yScale(0) - yScale(d.total))
-            .attr("y", (d) => yScale(d.total))
-            .style("fill", '#efefef')
-            .style("stroke", '#c6c4c4');
-        } else {
-          svg.selectAll("rect.bar").transition(tFast)
-            .attr("height", (d) => yScale(0) - yScale(d.total))
-            .attr("y", (d) => yScale(d.total))
-            .style("fill", '#c6c4c4')
-            .style("stroke", '#fff');
-        }
+        const barsFill = (zoomed === 'true') ? '#efefef' : '#c6c4c4';
+        const barsStroke = (zoomed === 'true') ? '#c6c4c4' : '#fff';
+
+        svg.selectAll("rect.bar").transition(tFast)
+          .attr("height", (d) => yScale(0) - yScale(d.totalCount))
+          .attr("y", (d) => yScale(d.totalCount))
+          .style("fill", barsFill)
+          .style("stroke", barsStroke);
       }
     })
 
