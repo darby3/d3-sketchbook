@@ -41,7 +41,7 @@
     // scales
 
     const xScale = d3.scaleBand()
-      .domain(datasetArray.map(d => d.dateRange))
+      .domain(datasetArray.map(d => d.end))
       .range([margin.left, width - margin.right])
       .paddingInner(0.1)
       .paddingOuter(0.05);
@@ -62,8 +62,8 @@
 
     const xAxis = d3.axisBottom(xScale)
       .tickValues(xScale.domain().filter(function (d, i) {
-        return !(i % 2)
-        // return true
+        // return !(i % 2)
+        return true
       }));
 
     const yAxis = d3.axisLeft(yScale).ticks(5);
@@ -97,7 +97,7 @@
       .data(datasetArray)
       .join('rect')
       .attr('class', 'bar')
-      .attr('x', (d, i) => xScale(d.dateRange))
+      .attr('x', (d, i) => xScale(d.end))
       .attr("y", (d) => yScale(d.total))
       .attr("width", () => xScale.bandwidth())
       .attr("height", (d) => yScale(0) - yScale(d.total))
@@ -105,16 +105,17 @@
       .attr("data-available", (d) => (d.total > 0))
       .on("click", barClickHandler)
       .append('title')
-      .text((d) => `Total tests for ${d.dateRange}: ${d.total}`);
+      .text((d) => `Total tests for ${d.end}: ${d.total}`);
 
 
     // create a line function and use it to draw a line
 
     const line = d3.line()
       .defined((d) => {
-        return yScale(0) - yScale(d.count) > 0;
+//        return yScale(0) - yScale(d.count) > 0;
+        return yScale(0) - yScale(d.total) > 0;
       })
-      .x(d => xScale(d.dateRange))
+      .x(d => xScale(d.end))
       .y(d => yScale(d.count))
 
     const chillPath = svg.append('path')
@@ -132,18 +133,20 @@
       .enter()
       .append('circle')
       .attr('class', 'point')
-      .attr('cx', (d) => xScale(d.dateRange) + xScale.bandwidth() / 2)
+      .attr('cx', (d) => xScale(d.end) + xScale.bandwidth() / 2)
       .attr("cy", (d) => yScale(d.count))
       .attr("r", (d) => {
-        return (yScale(0) - yScale(d.count) > 0 ? '4' : '0');
+//        return (yScale(0) - yScale(d.count) > 0 ? '4' : '0');
+        return (yScale(0) - yScale(d.count) >= 0 ? '4' : '0');
       })
       .append('title')
-      .text((d) => `Positive tests for ${d.dateRange}: ${d.count}`);
+      .text((d) => `Positive tests for ${d.end}: ${d.count}`);
 
     svg.selectAll("circle.point")
       .each(function(p) {
         const d3this = d3.select(this);
-        if (p.count === 0) {
+//        if (p.count === 0) {
+        if (p.total === 0) {
           d3.select(this).remove();
         }
       })
@@ -162,7 +165,7 @@
         .attr('class', 'smallLabel')
         .attr('dx', `${(margin.right - 70) / 2}`)
         .attr('dy', "35")
-        .text("Tests result for")
+        .text("For the week reported on")
         .attr("fill-opacity", "0")
         .transition()
         .duration(750)
@@ -194,7 +197,7 @@
               .attr('class', 'smallLabel')
               .attr('dx', `${(margin.right - 70) / 2}`)
               .attr('dy', "82")
-              .text("tests performed")
+              .text("tests processed")
               .style("fill-opacity", "0")
               .transition()
               .duration(500)
@@ -256,7 +259,7 @@
           .attr('dx', `${(margin.right - 70) / 2}`)
           .attr('dy', "65")
           .attr("fill-opacity", "0")
-          .text(d.dateRange)
+          .text(d.end)
           .transition()
           .duration(750)
           .ease(d3.easeSinOut)
