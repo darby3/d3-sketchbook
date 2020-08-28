@@ -395,5 +395,8 @@
       }
     })
 
+    document.querySelector('#fullscreenGo').addEventListener('click', function() {
+      document.querySelector("#svgOutput").requestFullscreen();
+    })
   });
 })();
