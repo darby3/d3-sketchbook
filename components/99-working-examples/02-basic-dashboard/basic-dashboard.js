@@ -15,14 +15,34 @@
 
     // Data initialization
 
+    const months = {
+      1: 'January',
+      2: 'February',
+      3: 'March',
+      4: 'April',
+      5: 'May',
+      6: 'June',
+      7: 'July',
+      8: 'August',
+      9: 'September',
+      10: 'October',
+      11: 'November',
+      12: 'September'
+    }
+
     let datasetArray = [];
 
     for (let i = 0; i < dataset.length; i++) {
+      const reportDate = dataset[i].dateEnd.split('/');
+
       datasetArray.push({
         id: i,
         start: dataset[i].dateStart,
         end: dataset[i].dateEnd,
         dateRange: dataset[i].dateStart + '–' + dataset[i].dateEnd,
+        reportMonth: months[reportDate[0]],
+        reportDay: reportDate[1],
+        reportYear: dataset[i].dateYear || '2020',
         positiveCount: dataset[i].number,
         totalCount: dataset[i].total,
         percentagePositive: dataset[i].number / dataset[i].total
@@ -244,12 +264,12 @@
       dataDatebox.call(g => g.append('text')
         .attr('class', 'dateLabel')
         .attr('dx', `${dataAlignments.textX}`)
-        .attr('dy', '65')
+        .attr('dy', '60')
         .attr('fill-opacity', '0')
-        .text(d.end)
+        .text(`${d.reportMonth} ${d.reportDay}, ${d.reportYear}`)
         .transition(t)
         .delay(250)
-        .attr('dy', '75')
+        .attr('dy', '70')
         .style('fill-opacity', '1')
       );
 
@@ -270,12 +290,12 @@
       dataReadoutRects.call(g => g.append('text')
         .attr('class', 'bigLabel')
         .attr('dx', `${dataAlignments.textX}`)
-        .attr('dy', '146')
+        .attr('dy', '148')
         .attr('fill-opacity', '0')
         .text(`${d.positiveCount}`)
         .transition(t)
         .delay(750)
-        .attr('dy', '156')
+        .attr('dy', '158')
         .style('fill-opacity', '1')
       );
 
@@ -395,7 +415,7 @@
       }
     })
 
-    document.querySelector('#fullscreenGo').addEventListener('click', function() {
+    document.querySelector('#fullscreenGo').addEventListener('click', function () {
       document.querySelector("#svgOutput").requestFullscreen();
     })
   });
