@@ -1,0 +1,31 @@
+:root {
+  /* Colors */
+  --running-31-1: #99AABF;
+  --running-31-2: #EDFCFF;
+  --running-31-3: #383F40;
+  --running-31-4: #16260F;
+  --running-31-5: #DFF24B;
+}
+
+#running-chart {
+  height: calc(100vh - 20px - 2rem);
+  padding: 1rem;
+  margin: 0;
+  border: 10px solid var(--running-31-1);
+  background-color: var(--running-31-3);
+  font-family: Verdana, sans-serif;
+
+  color: var(--running-31-2);
+
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: flex-start;
+  justify-content: center;
+
+  svg {
+    background-color: var(--running-31-2);
+    color: var(--running-31-4);
+
+    margin-bottom: 8rem;
+  }
+}
