@@ -26,13 +26,15 @@
 
     datasetArray.push({
       id: 0,
-      count: 0
+      count: 0,
+      cur: 0
     })
 
     for (let i = 0; i < dataset.length; i++) {
       datasetArray.push({
         id: dataset[i].id,
-        count: datasetArray[i].count + dataset[i].number
+        count: datasetArray[i].count + dataset[i].number,
+        cur: dataset[i].number
       })
     }
 
@@ -66,6 +68,40 @@
       .attr("transform", "translate(" + margin.left + ", 0)")
       .call(yAxis);
 
+    // CURRENT WEEK LINE
+
+    // create a line function and use it to draw a line
+
+    const lineMild = d3.line()
+      .x(d => xScale(d.id))
+      .y(d => yScale(d.cur))
+
+    svg.append('path')
+      .attr('d', lineMild(datasetArray))
+      .attr('fill', 'none')
+      .attr('stroke', running_31_1)
+      .attr('stroke-width', '2.5')
+      .attr('stroke-linejoin', 'round');
+
+    // plot the points as basic circles
+
+    svg.selectAll("circle.extraPoint")
+      .data(datasetArray)
+      .enter()
+      .append('circle')
+      .attr('class', 'extraPoint')
+      .attr('cx', (d) => xScale(d.id))
+      .attr("cy", (d) => yScale(d.cur))
+      .attr("r", () => 5)
+      .attr("fill", running_31_3)
+      .attr("stroke", running_31_1)
+      .attr("stroke-width", "2.5")
+      .append('title')
+      .text((d) => `run number: ${d.id} / run mileage: ${d.cur}`);
+
+
+    // CUMULATIVE LINE
+
     // create a line function and use it to draw a line
 
     const line = d3.line()
@@ -94,6 +130,7 @@
       .attr("stroke-width", "2.5")
       .append('title')
       .text((d) => `run number: ${d.id} / total mileage: ${d.count}`);
+
 
   });
 })();
