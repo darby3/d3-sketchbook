@@ -2,19 +2,21 @@
   "name": "example-project",
   "version": "0.1.0",
   "dependencies": {
-    "@babel/core": "^7.12.10",
-    "@frctl/fractal": "^1.5.2",
+    "@babel/core": "^7.15.5",
+    "@babel/preset-env": "^7.15.4",
+    "@frctl/fractal": "^1.5.11",
     "babelify": "^10.0.0",
     "browserify": "^17.0.0",
-    "chalk": "^4.1.0",
+    "chalk": "^4.1.2",
     "ncp": "^2.0.0",
-    "node-sass": "^5.0.0",
+    "node-sass": "^6.0.1",
     "node-sass-magic-importer": "^5.3.2",
     "npm-run-all": "^4.1.5",
-    "npm-watch": "^0.7.0",
+    "npm-watch": "^0.11.0",
     "onchange": "^7.1.0",
-    "prompt": "^1.1.0",
-    "shelljs": "^0.8.4"
+    "prompt": "^1.2.0",
+    "shelljs": "^0.8.4",
+    "unique-names-generator": "^4.6.0"
   },
   "watch": {
     "sass": {
@@ -26,17 +28,20 @@
     }
   },
   "scripts": {
-    "iterate": "node iterateComponent",
+    "iterate": "node do-iterate-component",
+    "makeaname": "node do-make-a-name",
     "sass": "node-sass --source-map=true --importer node_modules/node-sass-magic-importer/dist/cli.js --output-style='expanded' assets/scss/ --output public/css/",
     "sass:prod": "node-sass --importer node_modules/node-sass-magic-importer/dist/cli.js --output-style='expanded' assets/scss/ --output public/css/",
     "js:single": "onchange 'components/**/*.js' -- ./getOneJs.sh {{changed}}",
     "js:all": "./getAllJs.sh",
+    "jsBasic:all": "find ./components -name \"*.js\" -exec cp {} ./public/js/components/ \\;",
+    "jsBasic:single": "onchange 'components/**/*.js' -- cp {{changed}} ./public/js/components/",
     "fract": "fractal start --sync",
     "watch": "npm-watch",
-    "predev": "run-p sass js:all",
-    "dev": "run-p fract watch js:single",
+    "predev": "run-p sass jsBasic:all",
+    "dev": "run-p fract watch jsBasic:single",
     "build": "fractal build",
     "preprod": "rm -f ./public/css/global.css.map",
-    "prod": "run-s sass:prod js:all build"
+    "prod": "run-s sass:prod jsBasic:all build"
   }
 }

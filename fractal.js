@@ -19,3 +19,16 @@ fractal.web.set('static.path', path.join(__dirname, 'public'));
  * Static export destination.
  */
 fractal.web.set('builder.dest', __dirname + '/build');
+
+/**
+ * Theme customization.
+ */
+const mandelbrot = require('@frctl/mandelbrot'); // require the Mandelbrot theme module
+
+// create a new instance with custom config options
+const myCustomisedTheme = mandelbrot({
+  skin: "teal"
+});
+
+// tell Fractal to use the configured theme by default
+fractal.web.theme(myCustomisedTheme);
