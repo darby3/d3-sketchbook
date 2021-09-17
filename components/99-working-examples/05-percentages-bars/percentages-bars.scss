@@ -1,0 +1,82 @@
+#percentage-bars {
+  margin: 2rem;
+  font-family: var(--system-stack);
+
+  #scrollbox {
+    max-width: 100%;
+    overflow-x: auto;
+
+    #svgOutput {
+      min-width: 700px;
+    }
+  }
+
+  svg {
+    background-color: var(--white);
+    border: 1px solid var(--lightred);
+
+    * {
+      font-family: var(--system-stack);
+    }
+
+    text.title {
+      text-anchor: middle;
+      font-weight: 700;
+      font-size: 30px;
+      fill: white;
+    }
+
+    .bar {
+      transition: fill 0.25s ease-out;
+      fill: var(--darkred);
+    }
+
+    .xAxis {
+      .domain {
+        stroke: var(--almostblack);
+      }
+
+      .tick {
+        line {
+          stroke: var(--almostblack);
+        }
+
+        text {
+          fill: var(--darkgray);
+          font-size: 0.75rem;
+          font-weight: 700;
+          text-transform: uppercase;
+        }
+      }
+    }
+
+    .yAxis {
+      .domain {
+        stroke: var(--almostblack);
+      }
+
+      .tick {
+        line {
+          stroke: var(--almostblack);
+        }
+
+        text {
+          fill: var(--darkgray);
+        }
+      }
+    }
+  }
+
+  .calloutLabel {
+    font-size: 1rem;
+    font-weight: bold;
+    fill: var(--darkred);
+    text-anchor: middle;
+  }
+
+  .percentageLabel {
+    font-weight: bold;
+    fill: var(--darkred);
+    text-anchor: middle;
+  }
+}

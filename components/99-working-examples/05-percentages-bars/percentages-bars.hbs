@@ -1,0 +1,31 @@
+<section id="percentage-bars">
+    <h1>Group Percentages</h1>
+
+    <div id="scrollbox">
+        <div id="svgOutput"></div>
+    </div>
+
+    <div class="intro">
+        <script>
+            const dataset = [{
+                "group": "Group A",
+                "part": "1000",
+                "total": "4000",
+                "percentage": 84.8
+            }, {
+                "group": "Group B",
+                "part": "589",
+                "total": "985",
+                "percentage": 83.0
+            }, {
+                "group": "Group C",
+                "part": "300",
+                "total": "400",
+                "percentage": 77.5
+            }];
+        </script>
+    </div>
+</section>
+
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script src="{{ path '/js/components/percentages-bars.js' }}"></script>
