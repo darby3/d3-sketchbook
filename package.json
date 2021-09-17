@@ -1,12 +1,8 @@
 {
-  "name": "example-project",
+  "name": "d3-sketchbook",
   "version": "0.1.0",
   "dependencies": {
-    "@babel/core": "^7.15.5",
-    "@babel/preset-env": "^7.15.4",
     "@frctl/fractal": "^1.5.11",
-    "babelify": "^10.0.0",
-    "browserify": "^17.0.0",
     "chalk": "^4.1.2",
     "ncp": "^2.0.0",
     "node-sass": "^6.0.1",
@@ -32,8 +28,6 @@
     "makeaname": "node do-make-a-name",
     "sass": "node-sass --source-map=true --importer node_modules/node-sass-magic-importer/dist/cli.js --output-style='expanded' assets/scss/ --output public/css/",
     "sass:prod": "node-sass --importer node_modules/node-sass-magic-importer/dist/cli.js --output-style='expanded' assets/scss/ --output public/css/",
-    "js:single": "onchange 'components/**/*.js' -- ./getOneJs.sh {{changed}}",
-    "js:all": "./getAllJs.sh",
     "jsBasic:all": "find ./components -name \"*.js\" -exec cp {} ./public/js/components/ \\;",
     "jsBasic:single": "onchange 'components/**/*.js' -- cp {{changed}} ./public/js/components/",
     "fract": "fractal start --sync",
@@ -41,7 +35,7 @@
     "predev": "run-p sass jsBasic:all",
     "dev": "run-p fract watch jsBasic:single",
     "build": "fractal build",
-    "preprod": "rm -f ./public/css/global.css.map",
+    "preprod": "mkdir -p ./public/js/components/ && rm -f ./public/css/global.css.map",
     "prod": "run-s sass:prod jsBasic:all build"
   }
 }
