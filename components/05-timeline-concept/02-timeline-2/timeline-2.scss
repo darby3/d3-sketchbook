@@ -1,0 +1,26 @@
+#timeline-2 {
+  margin: 2rem;
+  font-family: var(--system-stack);
+
+  #scrollbox {
+    max-width: 100%;
+    overflow-x: auto;
+
+    #svgOutput {
+      min-width: 700px;
+    }
+  }
+
+  svg {
+    background-color: var(--white);
+    border: 1px solid var(--lightred);
+
+    * {
+      font-family: var(--system-stack);
+    }
+
+    .dot {
+      fill: var(--darkerblue);
+    }
+  }
+}
