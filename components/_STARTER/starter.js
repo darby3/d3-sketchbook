@@ -1,6 +1,6 @@
 (function () {
   document.addEventListener('DOMContentLoaded', function () {
-    console.log("vax-rate-chart-3 active");
+    console.log("starterID active");
 
     // Debug mode?
 
