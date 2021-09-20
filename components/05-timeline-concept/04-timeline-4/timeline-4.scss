@@ -1,0 +1,59 @@
+#timeline-4 {
+  margin: 2rem;
+  font-family: var(--system-stack);
+
+  #scrollbox {
+    max-width: 100%;
+    overflow-x: auto;
+
+    #svgOutput {
+      min-width: 700px;
+    }
+  }
+
+  svg {
+    background-color: var(--white);
+    border: 1px solid var(--lightred);
+
+    * {
+      font-family: var(--system-stack);
+    }
+
+    .dot {
+      fill: var(--darkerblue);
+    }
+
+    .x-axis-label {
+      text-anchor: start;
+      font-weight: bold;
+      color: var(--mediumgray)
+    }
+
+    .authorLine {
+      stroke-width: 2px;
+      stroke: var(--lighterblue);
+    }
+
+    .textBox {
+      fill: var(--almostwhite);
+      stroke: var(--almostblack);
+      stroke-width: 4px;
+    }
+
+    .quoteText {
+      inline-size: 100px;
+    }
+
+    .funText {
+      font-size: 0.5rem;
+      color: var(--black);
+    }
+
+    #funTextBox {
+      p {
+        margin: 0 0 0.5rem 0;
+        line-height: 1;
+      }
+    }
+  }
+}
